@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35514.174 d17.12
+VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizaMed.WebApp", "organiza-med-tcc\OrganizaMed.WebApp.csproj", "{C3CE1BBF-CEBF-4C0A-AC76-BBAC07A33DD0}"
 EndProject
@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Infra", "4. Infra", "{33
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Testes", "5. Testes", "{26BFBFCE-FEE6-4566-83EA-DA4EAF6A5250}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizaMed.Dominio", "OrganizaMed.Dominio\OrganizaMed.Dominio.csproj", "{F401C725-31A1-4E40-B318-D21AE88DEFED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,11 +27,16 @@ Global
 		{C3CE1BBF-CEBF-4C0A-AC76-BBAC07A33DD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3CE1BBF-CEBF-4C0A-AC76-BBAC07A33DD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3CE1BBF-CEBF-4C0A-AC76-BBAC07A33DD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F401C725-31A1-4E40-B318-D21AE88DEFED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F401C725-31A1-4E40-B318-D21AE88DEFED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F401C725-31A1-4E40-B318-D21AE88DEFED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F401C725-31A1-4E40-B318-D21AE88DEFED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C3CE1BBF-CEBF-4C0A-AC76-BBAC07A33DD0} = {33FCB7B4-E34A-4B91-AAE4-14C7FC409973}
+		{F401C725-31A1-4E40-B318-D21AE88DEFED} = {8C27BD5F-138E-4154-B6F0-6033D5ED5266}
 	EndGlobalSection
 EndGlobal
