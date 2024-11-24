@@ -6,5 +6,6 @@
         void Adicionar(T entidade);
         void Atualizar(T entidade);
         void Remover(T entidade);
+        List<T> ObterTodos();
     }
 }
