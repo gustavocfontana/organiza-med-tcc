@@ -14,16 +14,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OrganizaMed.Aplicacao\OrganizaMed.Aplicacao.csproj" />
     <ProjectReference Include="..\OrganizaMed.Dominio\OrganizaMed.Dominio.csproj" />
     <ProjectReference Include="..\OrganizaMed.Infra\OrganizaMed.Infra.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

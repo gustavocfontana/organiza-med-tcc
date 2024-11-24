@@ -1,0 +1,41 @@
+﻿@model InserirMedicosViewModel
+
+@{
+    ViewBag.Title = "Adicionar Médico";
+}
+
+<div class="col">
+    <div class="row gap-3 my-3 my-xl-5">
+        <form class="col-lg-6 d-grid gap-3 fs-5" asp-action="Adicionar">
+            <div>
+                <label class="control-label fw-semibold mb-1">Nome</label>
+                <input class="form-control mb-1" asp-for="Nome" />
+                <span class="text-danger fs-6" asp-validation-for="Nome"></span>
+            </div>
+
+            <div>
+                <label class="control-label fw-semibold mb-1">Crm</label>
+                <input class="form-control mb-1" asp-for="Crm"/>
+                <span class="text-danger fs-6" asp-validation-for="Crm"></span>
+            </div>
+
+            <div>
+                <label class="control-label fw-semibold mb-1">Especialidade</label>
+                <input class="form-control mb-1" asp-for="Especialidade"/>
+                <span class="text-danger fs-6" asp-validation-for="Especialidade"></span>
+            </div>
+
+            <div class="d-grid gap-2 d-md-block mt-4">
+                <button class="btn btn-primary px-5">
+                    <i class="bi bi-floppy-fill me-1"></i>
+                    Gravar
+                </button>
+
+                <a class="btn btn-outline-primary px-5" asp-action="Listar">
+                    <i class="bi bi-arrow-return-left me-1"></i>
+                    Voltar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
