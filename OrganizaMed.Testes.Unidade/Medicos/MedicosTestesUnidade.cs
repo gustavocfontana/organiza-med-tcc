@@ -49,6 +49,7 @@ namespace OrganizaMed.Testes.Unidade.Medicos
 
             medico.AdicionarAtividade(new Consulta
             {
+                Descricao = "Consulta",
                 DataInicio = DateTime.Now.AddHours(1),
                 DataFim = DateTime.Now.AddHours(2)
             });

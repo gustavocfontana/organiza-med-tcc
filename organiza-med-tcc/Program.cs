@@ -1,6 +1,8 @@
 using System.Reflection;
 using OrganizaMed.Aplicacao.Servicos;
+using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Dominio.Medicos;
+using OrganizaMed.Infra.Atividades;
 using OrganizaMed.Infra.Compartilhado;
 using OrganizaMed.Infra.Medicos;
 
@@ -16,6 +18,9 @@ namespace organiza_med_tcc
 
             builder.Services.AddScoped<IRepositorioMedicos, RepositorioMedicos>();
             builder.Services.AddScoped<MedicosServico>();
+
+            builder.Services.AddScoped<IRepositorioAtividades, RepositorioAtividades>();
+            builder.Services.AddScoped<AtividadesServico>();
 
             builder.Services.AddAutoMapper(cfg =>
             {

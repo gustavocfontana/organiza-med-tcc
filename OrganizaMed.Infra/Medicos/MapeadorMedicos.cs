@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OrganizaMed.Dominio.Medicos;
 
+namespace OrganizaMed.Infra.Medicos;
+
 public class MapeadorMedicos : IEntityTypeConfiguration<Medico>
 {
     public void Configure(EntityTypeBuilder<Medico> builder)

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Dominio.Medicos;
+using OrganizaMed.Infra.Medicos;
 
 namespace OrganizaMed.Infra.Compartilhado
 {
     public class OrganizaMedDbContext : DbContext
     {
         public DbSet<Medico> Medicos { get; set; }
+        public DbSet<Atividade> Atividades { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

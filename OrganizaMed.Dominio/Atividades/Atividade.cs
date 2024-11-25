@@ -3,27 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OrganizaMed.Dominio.Atividades;
+using OrganizaMed.Dominio.Compartilhado;
 using OrganizaMed.Dominio.Medicos;
 
 namespace OrganizaMed.Dominio.Atividades
 {
-    public abstract class Atividade
+    public class Atividade : EntidadeBase
     {
+        protected Atividade() {} // EF
+
+        public string Descricao { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public List<Medico> MedicosEnvolvidos { get; set; } = new List<Medico>();
+        public TimeSpan RecoveryTime { get; }
 
-        public abstract TimeSpan RecoveryTime { get; }
+        public Atividade(string descricao, DateTime dataInicio, DateTime dataFim)
+        {
+            Descricao = descricao;
+            DataInicio = dataInicio;
+            DataFim = dataFim;
+        }
+
+        public override List<string> Validar()
+        {
+            List<string> erros = [];
+
+            if (Descricao.Length < 3)
+                erros.Add("Descrição inválida");
+            if (DataInicio > DataFim)
+                erros.Add("Data de início maior que data de fim");
+
+            return erros;
+        }
     }
-}
-
-public class Consulta : Atividade
-{
-    public override TimeSpan RecoveryTime => TimeSpan.FromMinutes(10);
-}
-
-public class Cirurgia : Atividade
-{
-    public override TimeSpan RecoveryTime => TimeSpan.FromHours(4);
 }

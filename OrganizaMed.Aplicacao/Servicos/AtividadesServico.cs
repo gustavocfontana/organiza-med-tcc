@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using FluentResults;
+using OrganizaMed.Dominio.Atividades;
+
+namespace OrganizaMed.Aplicacao.Servicos
+{
+    public class AtividadesServico
+    {
+        private readonly IRepositorioAtividades repositorioAtividade;
+
+        public AtividadesServico(IRepositorioAtividades repositorioAtividade)
+        {
+            this.repositorioAtividade = repositorioAtividade;
+        }
+
+        public Result<Atividade> Adicionar(Atividade atividade)
+        {
+            repositorioAtividade.Adicionar(atividade);
+
+            return Result.Ok(atividade);
+        }
+
+        public Result<Atividade> Atualizar(Atividade atividadeAtualizada)
+        {
+            var atividade = repositorioAtividade.ObterPorId
+                (atividadeAtualizada.Id);
+
+            if (atividade == null)
+                return Result.Fail<Atividade>("Atividade não encontrada");
+
+            atividade.Descricao = atividadeAtualizada.Descricao;
+            atividade.DataInicio = atividadeAtualizada.DataInicio;
+            atividade.DataFim = atividadeAtualizada.DataFim;
+
+            repositorioAtividade.Atualizar(atividade);
+
+            return Result.Ok(atividade);
+        }
+
+        public Result<Atividade> Remover(int atividadeId)
+        {
+            var atividade = repositorioAtividade.ObterPorId(atividadeId);
+
+            if (atividade == null)
+                return Result.Fail<Atividade>("Atividade não encontrada");
+
+            repositorioAtividade.Remover(atividade);
+
+            return Result.Ok(atividade);
+        }
+
+        public Result<Atividade> ObterPorId(int atividadeId)
+        {
+            var atividade = repositorioAtividade.ObterPorId(atividadeId);
+
+            if (atividade == null)
+                return Result.Fail<Atividade>("Atividade não encontrada");
+
+            return Result.Ok(atividade);
+        }
+
+        public Result<List<Atividade>> ObterTodos()
+        {
+            var atividades = repositorioAtividade.ObterTodos();
+
+            return Result.Ok(atividades);
+        }
+    }
+}
