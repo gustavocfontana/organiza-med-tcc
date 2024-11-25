@@ -1,5 +1,6 @@
 ﻿using FizzWare.NBuilder;
 using OrganizaMed.Dominio.Atividades;
+using OrganizaMed.Dominio.Medicos;
 using OrganizaMed.Infra.Atividades;
 using OrganizaMed.Infra.Compartilhado;
 
@@ -36,6 +37,39 @@ namespace OrganizaMed.Testes.Integracao.Atividades
             Assert.IsNotNull(atividadeSelecionada);
 
             Assert.AreEqual(atividade, atividadeSelecionada);
+        }
+
+        [TestMethod]
+        public void DeveAtualizarAtividade()
+        {
+            var atividade = Builder<Atividade>
+                .CreateNew()
+                .Persist();
+
+            atividade.Descricao = "Teste de Edição";
+            repositorio.Atualizar(atividade);
+
+            var atividadeSelecionada = repositorio.ObterPorId(atividade.Id);
+
+            Assert.IsNotNull(atividadeSelecionada);
+            Assert.AreEqual(atividade, atividadeSelecionada);
+        }
+
+        [TestMethod]
+        public void DeveExcluirAtividade()
+        {
+            var atividade = Builder<Atividade>
+                .CreateNew()
+                .Persist();
+
+            repositorio.Remover(atividade);
+
+            var atividadeSelecionada = repositorio.ObterPorId(atividade.Id);
+
+            var atividades = repositorio.ObterTodos();
+
+            Assert.IsNull(atividadeSelecionada);
+            Assert.AreEqual(0, atividades.Count);
         }
     }
 }
