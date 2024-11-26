@@ -6,23 +6,23 @@
 
 <div class="col">
     <h2>Top 10 Médicos que mais horas trabalharam</h2>
-    <table class="table">
+    <table class="table top-medicos-table">
         <thead>
-        <tr>
-            <th>Id</th>
-            <th>Nome</th>
-            <th>Horas Trabalhadas</th>
-        </tr>
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Horas Trabalhadas</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var medico in Model)
-        {
-            <tr>
-                <td>@medico.Id</td>
-                <td>@medico.Nome</td>
-                <td>@medico.HorasTrabalhadas</td>
-            </tr>
-        }
+            @foreach (var medico in Model)
+            {
+                <tr>
+                    <td>@medico.Id</td>
+                    <td>@medico.Nome</td>
+                    <td>@medico.HorasTrabalhadas</td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>

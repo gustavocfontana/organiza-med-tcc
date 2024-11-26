@@ -20,3 +20,13 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Estilo para a tabela TopMedicos */
+.top-medicos-table {
+  color: #ff6347; /* Cor da fonte personalizada */
+}
+
+/* Estilo para o modo noturno */
+body.dark-mode .top-medicos-table {
+  color: #ffa07a; /* Cor da fonte no modo noturno */
+}
