@@ -21,12 +21,22 @@ namespace organiza_med_tcc.Controllers.Compartilhado
 
         protected void ApresentarMensagemDeErro(Result resultado)
         {
-            ViewBag.Mensagem(new MensagemViewModel
+            if (resultado.Errors != null && resultado.Errors.Count > 0)
+            {
+                ViewBag.Mensagem = new MensagemViewModel
                 {
                     Titulo = "Erro",
                     Mensagem = resultado.Errors[0].Message
-                }
-            );
+                };
+            }
+            else
+            {
+                ViewBag.Mensagem = new MensagemViewModel
+                {
+                    Titulo = "Erro",
+                    Mensagem = "An unknown error occurred."
+                };
+            }
         }
 
         protected void ApresentarMensagemDeSucesso(string mensagem)
