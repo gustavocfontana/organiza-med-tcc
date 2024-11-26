@@ -63,10 +63,6 @@ namespace OrganizaMed.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(8)");
 
-                    b.Property<string>("Especialidade")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("varchar(100)");

@@ -12,8 +12,6 @@ namespace organiza_med_tcc.Models
         [MinLength(3, ErrorMessage = "O CRM deve conter ao menos 8 caracteres")]
         public string Crm { get; set; }
 
-        [Required(ErrorMessage = "A especialidade é obrigatória")]
-        public string Especialidade { get; set; }
     }
 
     public class EditarMedicosViewModel
@@ -28,8 +26,6 @@ namespace organiza_med_tcc.Models
         [MinLength(3, ErrorMessage = "O CRM deve conter ao menos 8 caracteres")]
         public string Crm { get; set; }
 
-        [Required(ErrorMessage = "A especialidade é obrigatória")]
-        public string Especialidade { get; set; }
     }
 
     public class ListarMedicosViewModel
@@ -37,7 +33,6 @@ namespace organiza_med_tcc.Models
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Crm { get; set; }
-        public string Especialidade { get; set; }
     }
 
     public class DetalhesMedicosViewModel
@@ -45,6 +40,12 @@ namespace organiza_med_tcc.Models
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Crm { get; set; }
-        public string Especialidade { get; set; }
+    }
+
+    public class TopMedicosViewModel
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public double HorasTrabalhadas { get; set; }
     }
 }

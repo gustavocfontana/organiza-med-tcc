@@ -16,8 +16,7 @@ namespace OrganizaMed.Testes.Unidade.Medicos
         {
             var medico = new Medico(
                 "Fulano",
-                "12345-SP",
-                "Cardio");
+                "12345-SP");
 
             var erros = medico.Validar();
 
@@ -29,8 +28,7 @@ namespace OrganizaMed.Testes.Unidade.Medicos
         {
             var medico = new Medico(
                 "Fu",
-                "12345-S",
-                "Cardio");
+                "12345-S");
 
             var erros = medico.Validar();
 
@@ -44,8 +42,7 @@ namespace OrganizaMed.Testes.Unidade.Medicos
         {
             var medico = new Medico(
                 "Fulano",
-                "12345-SP",
-                "Cardio");
+                "12345-SP");
 
             medico.AdicionarAtividade(new Consulta
             {

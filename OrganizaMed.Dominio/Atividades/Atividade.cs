@@ -25,9 +25,19 @@ namespace OrganizaMed.Dominio.Atividades
             DataFim = dataFim;
         }
 
+        // Novo construtor
+        public Atividade(int id, string descricao, DateTime dataInicio, DateTime dataFim, List<Medico> medicosEnvolvidos)
+        {
+            Id = id;
+            Descricao = descricao;
+            DataInicio = dataInicio;
+            DataFim = dataFim;
+            MedicosEnvolvidos = medicosEnvolvidos ?? new List<Medico>();
+        }
+
         public override List<string> Validar()
         {
-            List<string> erros = [];
+            List<string> erros = new List<string>();
 
             if (Descricao.Length < 3)
                 erros.Add("Descrição inválida");

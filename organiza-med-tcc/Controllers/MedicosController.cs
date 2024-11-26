@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using organiza_med_tcc.Controllers.Compartilhado;
 using organiza_med_tcc.Models;
 using OrganizaMed.Aplicacao.Servicos;
+using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Dominio.Medicos;
 
 namespace organiza_med_tcc.Controllers
@@ -156,6 +157,39 @@ namespace organiza_med_tcc.Controllers
             var detalhesVm = mapeador.Map<DetalhesMedicosViewModel>(medico);
 
             return View(detalhesVm);
+        }
+
+        public IActionResult TopTrabalhadores(DateTime dataInicio, DateTime dataFim)
+        {
+            var resultado = servico.ObterTodos();
+            if (resultado.IsFailed)
+            {
+                ApresentarMensagemDeErro(resultado.ToResult());
+                return RedirectToAction("Index", "Home");
+            }
+
+            var medicos = resultado.Value;
+
+            var topMedicos = medicos.Select(medico => new
+                {
+                    Medico = medico,
+                    HorasTrabalhadas = medico.Atividades
+                        .Where(a => a.DataInicio >= dataInicio && a.DataFim <= dataFim)
+                        .Sum(a => ( a.DataFim - a.DataInicio ).TotalHours)
+                })
+                .OrderByDescending(m => m.HorasTrabalhadas)
+                .Take(10)
+                .ToList();
+
+            var topMedicosViewModel = topMedicos.Select(m => new TopMedicosViewModel
+                {
+                    Id = m.Medico.Id,
+                    Nome = m.Medico.Nome,
+                    HorasTrabalhadas = m.HorasTrabalhadas
+                })
+                .ToList();
+
+            return View(topMedicosViewModel);
         }
     }
 }

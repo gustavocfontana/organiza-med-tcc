@@ -18,7 +18,6 @@ namespace OrganizaMed.Infra.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "varchar(100)", nullable: false),
                     Crm = table.Column<string>(type: "varchar(8)", nullable: false),
-                    Especialidade = table.Column<string>(type: "varchar(100)", nullable: false)
                 },
                 constraints: table =>
                 {

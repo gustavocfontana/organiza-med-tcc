@@ -34,7 +34,7 @@ namespace organiza_med_tcc.Controllers.Compartilhado
                 ViewBag.Mensagem = new MensagemViewModel
                 {
                     Titulo = "Erro",
-                    Mensagem = "An unknown error occurred."
+                    Mensagem = "Erro desconhecido."
                 };
             }
         }

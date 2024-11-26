@@ -34,7 +34,6 @@ namespace OrganizaMed.Aplicacao.Servicos
 
             medico.Nome = medicoAtualizado.Nome;
             medico.Crm = medicoAtualizado.Crm;
-            medico.Especialidade = medicoAtualizado.Especialidade;
 
             repositorioMedico.Atualizar(medico);
 
