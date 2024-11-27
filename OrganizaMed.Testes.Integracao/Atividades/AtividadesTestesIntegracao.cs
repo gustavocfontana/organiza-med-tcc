@@ -1,8 +1,14 @@
-﻿using FizzWare.NBuilder;
+﻿using OrganizaMed.Infra.Compartilhado;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using FizzWare.NBuilder;
 using OrganizaMed.Dominio.Atividades;
-using OrganizaMed.Dominio.Medicos;
 using OrganizaMed.Infra.Atividades;
-using OrganizaMed.Infra.Compartilhado;
+using FluentResults;
+using OrganizaMed.Aplicacao.Servicos;
 
 namespace OrganizaMed.Testes.Integracao.Atividades
 {
@@ -12,6 +18,7 @@ namespace OrganizaMed.Testes.Integracao.Atividades
     {
         private OrganizaMedDbContext dbContext;
         private RepositorioAtividades repositorio;
+        private AtividadesServico servico;
 
         [TestInitialize]
         public void Inicializar()
@@ -21,8 +28,16 @@ namespace OrganizaMed.Testes.Integracao.Atividades
             dbContext.Atividades.RemoveRange(dbContext.Atividades);
 
             repositorio = new RepositorioAtividades(dbContext);
+            servico = new AtividadesServico(repositorio);
 
             BuilderSetup.SetCreatePersistenceMethod<Atividade>(repositorio.Adicionar);
+            BuilderSetup.SetCreatePersistenceMethod<IList<Atividade>>(atividades =>
+            {
+                foreach (var atividade in atividades)
+                {
+                    repositorio.Adicionar(atividade);
+                }
+            });
         }
 
         [TestMethod]
@@ -30,13 +45,14 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         {
             var atividade = Builder<Atividade>
                 .CreateNew()
+                .With(a => a.DataInicio = DateTime.Now)
+                .With(a => a.DataFim = DateTime.Now.AddHours(1))
                 .Persist();
 
-            var atividadeSelecionada = repositorio.ObterPorId(atividade.Id);
+            var resultado = servico.Adicionar(atividade);
 
-            Assert.IsNotNull(atividadeSelecionada);
-
-            Assert.AreEqual(atividade, atividadeSelecionada);
+            Assert.IsTrue(resultado.IsSuccess);
+            Assert.IsNotNull(resultado.Value);
         }
 
         [TestMethod]
@@ -44,14 +60,15 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         {
             var atividade = Builder<Atividade>
                 .CreateNew()
+                .With(a => a.DataInicio = DateTime.Now)
+                .With(a => a.DataFim = DateTime.Now.AddHours(1))
                 .Persist();
 
-            repositorio.Atualizar(atividade);
+            atividade.DataFim = DateTime.Now.AddHours(2);
+            var resultado = servico.Atualizar(atividade);
 
-            var atividadeSelecionada = repositorio.ObterPorId(atividade.Id);
-
-            Assert.IsNotNull(atividadeSelecionada);
-            Assert.AreEqual(atividade, atividadeSelecionada);
+            Assert.IsTrue(resultado.IsSuccess);
+            Assert.AreEqual(atividade.DataFim, resultado.Value.DataFim);
         }
 
         [TestMethod]
@@ -59,16 +76,45 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         {
             var atividade = Builder<Atividade>
                 .CreateNew()
+                .With(a => a.DataInicio = DateTime.Now)
+                .With(a => a.DataFim = DateTime.Now.AddHours(1))
                 .Persist();
 
-            repositorio.Remover(atividade);
+            var resultado = servico.Remover(atividade.Id);
 
-            var atividadeSelecionada = repositorio.ObterPorId(atividade.Id);
+            Assert.IsTrue(resultado.IsSuccess);
+            Assert.IsNull(repositorio.ObterPorId(atividade.Id));
+        }
 
-            var atividades = repositorio.ObterTodos();
+        [TestMethod]
+        public void DeveObterAtividadePorId()
+        {
+            var atividade = Builder<Atividade>
+                .CreateNew()
+                .With(a => a.DataInicio = DateTime.Now)
+                .With(a => a.DataFim = DateTime.Now.AddHours(1))
+                .Persist();
 
-            Assert.IsNull(atividadeSelecionada);
-            Assert.AreEqual(0, atividades.Count);
+            var resultado = servico.ObterPorId(atividade.Id);
+
+            Assert.IsTrue(resultado.IsSuccess);
+            Assert.IsNotNull(resultado.Value);
+        }
+
+        [TestMethod]
+        public void DeveObterTodasAtividades()
+        {
+            var atividades = Builder<Atividade>
+                .CreateListOfSize(5)
+                .All()
+                .With(a => a.DataInicio = DateTime.Now)
+                .With(a => a.DataFim = DateTime.Now.AddHours(1))
+                .Persist();
+
+            var resultado = servico.ObterTodos();
+
+            Assert.IsTrue(resultado.IsSuccess);
+            Assert.AreEqual(5, resultado.Value.Count);
         }
     }
 }
