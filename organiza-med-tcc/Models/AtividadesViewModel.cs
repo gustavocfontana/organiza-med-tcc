@@ -4,38 +4,48 @@ namespace organiza_med_tcc.Models
 {
     public class InserirAtividadesViewModel
     {
-        [Required(ErrorMessage = "A descrição é obrigatória")]
-        [MinLength(3, ErrorMessage = "A descrição deve conter ao menos 3 caracteres")]
+        [Required]
         public string Descricao { get; set; }
 
-
-        [Required(ErrorMessage = "A data de início é obrigatória")]
+        [Required]
         public DateTime DataInicio { get; set; }
 
-        [Required(ErrorMessage = "A data de término é obrigatória")]
-
+        [Required]
         public DateTime DataTermino { get; set; }
 
-        [Required(ErrorMessage = "O médico é obrigatório")]
-        public int MedicoId { get; set; }
+        [Required]
+        public string TipoAtividade { get; set; }
+
+        [Required]
+        public List<int> MedicoId { get; set; }
+
+        public List<MedicoViewModel> Medicos { get; set; }
     }
 
     public class EditarAtividadesViewModel
     {
-        [Required(ErrorMessage = "A descrição é obrigatória")]
-        [MinLength(3, ErrorMessage = "A descrição deve conter ao menos 3 caracteres")]
+        [Required]
         public string Descricao { get; set; }
 
-
-        [Required(ErrorMessage = "A data de início é obrigatória")]
+        [Required]
         public DateTime DataInicio { get; set; }
 
-        [Required(ErrorMessage = "A data de término é obrigatória")]
-
+        [Required]
         public DateTime DataTermino { get; set; }
 
-        [Required(ErrorMessage = "O médico é obrigatório")]
-        public int MedicoId { get; set; }
+        [Required]
+        public string TipoAtividade { get; set; }
+
+        [Required]
+        public List<int> MedicoId { get; set; }
+
+        public List<MedicoViewModel> Medicos { get; set; }
+    }
+
+    public class MedicoViewModel
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; }
     }
 
     public class ListarAtividadesViewModel

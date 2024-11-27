@@ -1,4 +1,4 @@
-﻿@using Azure.Core
+﻿
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
@@ -46,11 +46,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Medicos" asp-action="TopTrabalhadores">Ranking</a>
                         </li>
-                        <li class="nav-item">
-                            <button id="theme-toggle" class="btn btn-outline-dark">@(theme == "dark" ? "Modo Claro" : "Modo Noturno")</button>
-                        </li>
+
                     </ul>
                 </div>
+
+                <li class="nav-item">
+                    <button id="theme-toggle" class="btn btn-outline-dark">@(theme == "dark" ? "Modo Claro" : "Modo Noturno")</button>
+                </li>
 
             </div>
         </nav>

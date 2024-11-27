@@ -4,32 +4,26 @@
     ViewBag.Title = "Adicionar Médico";
 }
 
-<div class="col">
-    <div class="row gap-3 my-3 my-xl-5">
-        <form class="col-lg-6 d-grid gap-3 fs-5" asp-action="Adicionar">
-            <div>
-                <label class="control-label fw-semibold mb-1">Nome</label>
-                <input class="form-control mb-1" asp-for="Nome" />
-                <span class="text-danger fs-6" asp-validation-for="Nome"></span>
-            </div>
+<h2>@ViewBag.Title</h2>
 
-            <div>
-                <label class="control-label fw-semibold mb-1">Crm</label>
-                <input class="form-control mb-1" asp-for="Crm"/>
-                <span class="text-danger fs-6" asp-validation-for="Crm"></span>
-            </div>
+<form asp-action="Adicionar" method="post" class="mt-4">
+    <div class="form-group">
 
-            <div class="d-grid gap-2 d-md-block mt-4">
-                <button class="btn btn-primary px-5">
-                    <i class="bi bi-floppy-fill me-1"></i>
-                    Gravar
-                </button>
-
-                <a class="btn btn-outline-primary px-5" asp-action="Listar">
-                    <i class="bi bi-arrow-return-left me-1"></i>
-                    Voltar
-                </a>
-            </div>
-        </form>
+        <label asp-for="Nome" class="control-label"></label>
+        <input asp-for="Nome" class="form-control"/>
+        <span asp-validation-for="Nome" class="text-danger"></span>
     </div>
-</div>
+
+    <div class="form-group">
+        <label asp-for="Crm" class="control-label"></label>
+        <input asp-for="Crm" class="form-control"/>
+        <span asp-validation-for="Crm" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Adicionar</button>
+
+    <a class="btn btn-outline-primary px-5" href="/Medicos/Listar">
+        <i class="bi bi-arrow-return-left me-1"></i>
+        Voltar
+    </a>
+</form>

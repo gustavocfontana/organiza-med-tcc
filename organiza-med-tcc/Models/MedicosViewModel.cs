@@ -4,12 +4,13 @@ namespace organiza_med_tcc.Models
 {
     public class InserirMedicosViewModel
     {
-        [Required(ErrorMessage = "O nome é obrigatório")]
-        [MinLength(3, ErrorMessage = "O nome deve conter ao menos 3 caracteres")]
+        [Required]
+        [Display(Name = "Nome")]
         public string Nome { get; set; }
 
-        [Required(ErrorMessage = "O CRM é obrigatório")]
-        [MinLength(3, ErrorMessage = "O CRM deve conter ao menos 8 caracteres")]
+        [Required]
+        [Display(Name = "CRM")]
+        [RegularExpression(@"^\d{5}-[A-Z]{2}$", ErrorMessage = "O CRM deve ser composto por cinco dígitos e a sigla do estado (ex: 78806-SP).")]
         public string Crm { get; set; }
 
     }
@@ -18,12 +19,13 @@ namespace organiza_med_tcc.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "O nome é obrigatório")]
-        [MinLength(3, ErrorMessage = "O nome deve conter ao menos 3 caracteres")]
+        [Required]
+        [Display(Name = "Nome")]
         public string Nome { get; set; }
 
-        [Required(ErrorMessage = "O CRM é obrigatório")]
-        [MinLength(3, ErrorMessage = "O CRM deve conter ao menos 8 caracteres")]
+        [Required]
+        [Display(Name = "CRM")]
+        [RegularExpression(@"^\d{5}-[A-Z]{2}$", ErrorMessage = "O CRM deve ser composto por cinco dígitos e a sigla do estado (ex: 78806-SP).")]
         public string Crm { get; set; }
 
     }
