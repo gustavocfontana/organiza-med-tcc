@@ -2,14 +2,10 @@
 
 public class Cirurgia : Atividade
 {
-    public TimeSpan RecoveryTime => TimeSpan.FromHours(4);
-
     public override List<string> Validar()
     {
         List<string> erros = [];
 
-        if (string.IsNullOrWhiteSpace(Descricao))
-            erros.Add("Descrição da cirurgia é obrigatória");
         if (DataInicio == default)
             erros.Add("Data de início da cirurgia é obrigatória");
         if (DataFim == default)

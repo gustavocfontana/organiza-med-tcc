@@ -46,7 +46,6 @@ namespace OrganizaMed.Testes.Integracao.Atividades
                 .CreateNew()
                 .Persist();
 
-            atividade.Descricao = "Teste de Edição";
             repositorio.Atualizar(atividade);
 
             var atividadeSelecionada = repositorio.ObterPorId(atividade.Id);

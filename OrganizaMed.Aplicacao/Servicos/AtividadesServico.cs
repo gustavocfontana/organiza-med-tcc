@@ -32,7 +32,6 @@ namespace OrganizaMed.Aplicacao.Servicos
             if (atividade == null)
                 return Result.Fail<Atividade>("Atividade não encontrada");
 
-            atividade.Descricao = atividadeAtualizada.Descricao;
             atividade.DataInicio = atividadeAtualizada.DataInicio;
             atividade.DataFim = atividadeAtualizada.DataFim;
 

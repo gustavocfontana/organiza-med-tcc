@@ -38,7 +38,7 @@ public class Medico : EntidadeBase
 
     public bool EstaDisponivel(DateTime dataInicio, DateTime dataFim)
     {
-        return Atividades.All(a => a.DataFim < dataInicio || a.DataInicio > dataFim);
+        return Atividades.All(a => a.DataFim + a.ObterTempoRecuperacao() <= dataInicio || a.DataInicio >= dataFim);
     }
 
     public void AdicionarAtividade(Atividade atividade)

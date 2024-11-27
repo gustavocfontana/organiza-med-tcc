@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Dominio.Medicos;
 
 namespace OrganizaMed.Testes.Unidade.Medicos
@@ -38,25 +39,39 @@ namespace OrganizaMed.Testes.Unidade.Medicos
         }
 
         [TestMethod]
-        public void MedicoEstaDisponivel()
+        public void MedicoEstaDisponivelConsultaRecuperacao()
         {
             var medico = new Medico(
                 "Fulano",
                 "12345-SP");
-
             medico.AdicionarAtividade(new Consulta
             {
-                Descricao = "Consulta",
-                DataInicio = DateTime.Now.AddHours(1),
-                DataFim = DateTime.Now.AddHours(2)
+                DataInicio = DateTime.Now.AddHours(-2),
+                DataFim = DateTime.Now.AddHours(-1.5)
             });
-
             var disponivel = medico.EstaDisponivel(
                 DateTime.Now.AddHours(1.5),
                 DateTime.Now.AddHours(3)
             );
+            Assert.IsTrue(disponivel);
+        }
 
-            Assert.IsFalse(disponivel);
+        [TestMethod]
+        public void MedicoEstaDisponivelCirurgiaRecuperacao()
+        {
+            var medico = new Medico(
+                "Fulano",
+                "12345-SP");
+            medico.AdicionarAtividade(new Cirurgia
+            {
+                DataInicio = DateTime.Now.AddHours(-2),
+                DataFim = DateTime.Now.AddHours(-1.5)
+            });
+            var disponivel = medico.EstaDisponivel(
+                DateTime.Now.AddHours(-1.5).Add(medico.Atividades.First().ObterTempoRecuperacao()),
+                DateTime.Now.AddHours(3)
+            );
+            Assert.IsTrue(disponivel);
         }
     }
 }

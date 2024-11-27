@@ -20,10 +20,6 @@ namespace OrganizaMed.Infra.Atividades
                 .ValueGeneratedOnAdd()
                 .IsRequired();
 
-            builder.Property(a => a.Descricao)
-                .HasColumnType("varchar(100)")
-                .IsRequired();
-
             builder.Property(a => a.DataInicio)
                 .HasColumnType("datetime")
                 .IsRequired();
@@ -35,10 +31,6 @@ namespace OrganizaMed.Infra.Atividades
             builder.HasMany(a => a.MedicosEnvolvidos)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("TBAtividadesMedicos"));
-
-            builder.Property(a => a.RecoveryTime)
-                .HasColumnType("time")
-                .IsRequired();
         }
     }
 }

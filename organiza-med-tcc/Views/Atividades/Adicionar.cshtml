@@ -7,11 +7,6 @@
 <div class="col">
     <div class="row gap-3 my-3 my-xl-5">
         <form class="col-lg-6 d-grid gap-3 fs-5" asp-action="Adicionar">
-            <div>
-                <label class="control-label fw-semibold mb-1">Descrição</label>
-                <input class="form-control mb-1" asp-for="Descricao" />
-                <span class="text-danger fs-6" asp-validation-for="Descricao"></span>
-            </div>
 
             <div>
                 <label class="control-label fw-semibold mb-1">Data de Início</label>
@@ -37,10 +32,12 @@
             <div>
                 <label class="control-label fw-semibold mb-1">Médico(s)</label>
                 <select class="form-control mb-1" asp-for="MedicoId" multiple>
-                    @* Supondo que MedicoId é uma lista de IDs de médicos *@
-                    @foreach (var medico in Model.Medicos)
+                    @if (Model.Medicos != null)
                     {
-                        <option value="@medico.Id">@medico.Nome</option>
+                        @foreach (var medico in Model.Medicos)
+                        {
+                            <option value="@medico.Id">@medico.Nome</option>
+                        }
                     }
                 </select>
                 <span class="text-danger fs-6" asp-validation-for="MedicoId"></span>

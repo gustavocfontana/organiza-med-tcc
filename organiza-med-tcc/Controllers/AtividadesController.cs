@@ -10,11 +10,13 @@ namespace organiza_med_tcc.Controllers
     public class AtividadesController : WebControllerBase
     {
         private readonly AtividadesServico servico;
+        private readonly MedicosServico servicoMedicos;
         private readonly IMapper mapeador;
 
-        public AtividadesController(AtividadesServico servico, IMapper mapeador)
+        public AtividadesController(AtividadesServico servico, MedicosServico servicoMedicos, IMapper mapeador)
         {
             this.servico = servico;
+            this.servicoMedicos = servicoMedicos;
             this.mapeador = mapeador;
         }
 
@@ -38,7 +40,12 @@ namespace organiza_med_tcc.Controllers
 
         public IActionResult Adicionar()
         {
-            return View();
+            var model = new InserirAtividadesViewModel
+            {
+                Medicos = servicoMedicos.ObterTodos().Value
+            };
+
+            return View(model);
         }
 
         [HttpPost]

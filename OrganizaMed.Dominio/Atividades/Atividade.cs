@@ -1,50 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OrganizaMed.Dominio.Compartilhado;
-using OrganizaMed.Dominio.Medicos;
+﻿using OrganizaMed.Dominio.Compartilhado;
+
 
 namespace OrganizaMed.Dominio.Atividades
 {
+    public enum TipoAtividade
+    {
+        Consulta,
+        Cirurgia
+    }
+
     public class Atividade : EntidadeBase
     {
         protected Atividade() {} // EF
 
-        public string Descricao { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public List<Medico> MedicosEnvolvidos { get; set; } = new List<Medico>();
-        public TimeSpan RecoveryTime { get; }
+        public TipoAtividade TipoAtividade { get; set; }
 
-        public Atividade(string descricao, DateTime dataInicio, DateTime dataFim)
+        public Atividade(DateTime dataInicio, DateTime dataFim, TipoAtividade tipoAtividade)
         {
-            Descricao = descricao;
             DataInicio = dataInicio;
             DataFim = dataFim;
+            TipoAtividade = tipoAtividade;
         }
 
         // Novo construtor
-        public Atividade(int id, string descricao, DateTime dataInicio, DateTime dataFim, List<Medico> medicosEnvolvidos)
+        public Atividade(int id, DateTime dataInicio, DateTime dataFim, List<Medico> medicosEnvolvidos, TipoAtividade tipoAtividade)
         {
             Id = id;
-            Descricao = descricao;
             DataInicio = dataInicio;
             DataFim = dataFim;
             MedicosEnvolvidos = medicosEnvolvidos ?? new List<Medico>();
+            TipoAtividade = tipoAtividade;
         }
 
         public override List<string> Validar()
         {
             List<string> erros = new List<string>();
 
-            if (Descricao.Length < 3)
-                erros.Add("Descrição inválida");
             if (DataInicio > DataFim)
                 erros.Add("Data de início maior que data de fim");
 
             return erros;
+        }
+
+        public TimeSpan ObterTempoRecuperacao()
+        {
+            return TipoAtividade == TipoAtividade.Cirurgia ? TimeSpan.FromHours(4) : TimeSpan.FromMinutes(10);
         }
     }
 }

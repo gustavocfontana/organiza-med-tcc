@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using FluentResults;
 
 namespace organiza_med_tcc.Models
 {
     public class InserirAtividadesViewModel
     {
-        [Required]
-        public string Descricao { get; set; }
-
         [Required]
         public DateTime DataInicio { get; set; }
 
@@ -17,15 +15,14 @@ namespace organiza_med_tcc.Models
         public string TipoAtividade { get; set; }
 
         [Required]
-        public List<int> MedicoId { get; set; }
+        public int[] MedicoId { get; set; }
 
-        public List<MedicoViewModel> Medicos { get; set; }
+        [Required]
+        public List<Medico> Medicos { get; set; }
     }
 
     public class EditarAtividadesViewModel
     {
-        [Required]
-        public string Descricao { get; set; }
 
         [Required]
         public DateTime DataInicio { get; set; }
