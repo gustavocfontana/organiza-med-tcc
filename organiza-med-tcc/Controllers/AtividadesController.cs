@@ -52,21 +52,31 @@ namespace organiza_med_tcc.Controllers
         public IActionResult Adicionar(InserirAtividadesViewModel inserirVm)
         {
             if (!ModelState.IsValid)
+            {
+                inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
                 return View(inserirVm);
+            }
+
+            var medicosIndisponiveis = servicoMedicos.VerificarDisponibilidade(inserirVm.MedicoId, inserirVm.DataInicio, inserirVm.DataTermino);
+
+            if (medicosIndisponiveis.Any())
+            {
+                ModelState.AddModelError("", "Os seguintes médicos não estão disponíveis no período selecionado: " + string.Join(", ", medicosIndisponiveis));
+                inserirVm.Medicos = servicoMedicos.ObterTodos().Value; 
+                return View(inserirVm);
+            }
 
             var atividade = mapeador.Map<Atividade>(inserirVm);
-
             var resultado = servico.Adicionar(atividade);
 
             if (resultado.IsFailed)
             {
                 ApresentarMensagemDeErro(resultado.ToResult());
-
-                return RedirectToAction(nameof ( Listar ));
+                inserirVm.Medicos = servicoMedicos.ObterTodos().Value; 
+                return View(inserirVm);
             }
 
             ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
-
             return RedirectToAction(nameof ( Listar ));
         }
 

@@ -12,6 +12,10 @@ namespace organiza_med_tcc.Models
         [Display(Name = "CRM")]
         [RegularExpression(@"^\d{5}-[A-Z]{2}$", ErrorMessage = "O CRM deve ser composto por cinco dígitos e a sigla do estado (ex: 78806-SP).")]
         public string Crm { get; set; }
+        
+        [Required]
+        [Display(Name = "Especialidade")]
+        public string Especialidade { get; set; }
 
         public List<Medico> Medicos { get; set; } = new List<Medico>();
     }

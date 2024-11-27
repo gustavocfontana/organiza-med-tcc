@@ -15,7 +15,7 @@ namespace organiza_med_tcc.Models
         public string TipoAtividade { get; set; }
 
         [Required]
-        public int[] MedicoId { get; set; }
+        public List<int> MedicoId { get; set; }
 
         [Required]
         public List<Medico> Medicos { get; set; }
@@ -48,7 +48,6 @@ namespace organiza_med_tcc.Models
     public class ListarAtividadesViewModel
     {
         public int Id { get; set; }
-        public string Descricao { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataTermino { get; set; }
         public string Medico { get; set; }
@@ -57,7 +56,6 @@ namespace organiza_med_tcc.Models
     public class DetalhesAtividadesViewModel
     {
         public int Id { get; set; }
-        public string Descricao { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataTermino { get; set; }
         public string Medico { get; set; }

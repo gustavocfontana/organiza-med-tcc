@@ -7,20 +7,22 @@ public class Medico : EntidadeBase
 
     public string Nome { get; set; }
     public string Crm { get; set; }
+    public string Especialidade { get; set; }
     public List<Atividade> Atividades { get; set; } = new List<Atividade>();
 
-    public Medico(string nome, string crm)
+    public Medico(string nome, string crm, string especialidade)
     {
         Nome = nome;
         Crm = crm;
+        Especialidade = especialidade;
     }
 
-    // Novo construtor
-    public Medico(int id, string nome, string crm, List<Atividade> atividades)
+    public Medico(int id, string nome, string crm, string especialidade, List<Atividade> atividades)
     {
         Id = id;
         Nome = nome;
         Crm = crm;
+        Especialidade = especialidade;
         Atividades = atividades ?? new List<Atividade>();
     }
 
@@ -32,6 +34,8 @@ public class Medico : EntidadeBase
             erros.Add("Nome inválido");
         if (Crm.Length < 8)
             erros.Add("CRM inválido");
+        if (string.IsNullOrWhiteSpace(Especialidade))
+            erros.Add("Especialidade inválida");
 
         return erros;
     }

@@ -56,7 +56,7 @@ namespace OrganizaMed.Aplicacao.Servicos
         {
             var medico = repositorioMedico.ObterPorId(medicoId);
 
-            if (medico == null) 
+            if (medico == null)
                 return Result.Fail<Medico>("Médico não encontrado");
 
             return Result.Ok(medico);
@@ -67,6 +67,23 @@ namespace OrganizaMed.Aplicacao.Servicos
             var medicos = repositorioMedico.ObterTodos();
 
             return Result.Ok(medicos);
+        }
+
+        public IEnumerable<string> VerificarDisponibilidade(IEnumerable<int> medicoIds, DateTime dataInicio, DateTime dataTermino)
+        {
+            var medicosIndisponiveis = new List<string>();
+
+            foreach (var medicoId in medicoIds)
+            {
+                var medico = ObterPorId(medicoId).Value;
+                if (medico.Atividades.Any(a => a.DataInicio < dataTermino && a.DataFim > dataInicio))
+                    if (medico != null && !medico.EstaDisponivel(dataInicio, dataTermino))
+                    {
+                        medicosIndisponiveis.Add(medico.Nome);
+                    }
+            }
+
+            return medicosIndisponiveis;
         }
     }
 }
