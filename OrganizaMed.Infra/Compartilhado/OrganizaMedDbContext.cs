@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Dominio.Medicos;
+using OrganizaMed.Infra.Atividades;
 using OrganizaMed.Infra.Medicos;
 
 namespace OrganizaMed.Infra.Compartilhado
@@ -29,6 +30,7 @@ namespace OrganizaMed.Infra.Compartilhado
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new MapeadorMedicos());
+            modelBuilder.ApplyConfiguration(new MapeadorAtividades());
 
             base.OnModelCreating(modelBuilder);
         }

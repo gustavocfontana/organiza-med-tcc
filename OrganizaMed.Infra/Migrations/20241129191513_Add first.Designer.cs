@@ -12,8 +12,8 @@ using OrganizaMed.Infra.Compartilhado;
 namespace OrganizaMed.Infra.Migrations
 {
     [DbContext(typeof(OrganizaMedDbContext))]
-    [Migration("20241126180623_Remove Especialidade")]
-    partial class RemoveEspecialidade
+    [Migration("20241129191513_Add first")]
+    partial class Addfirst
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace OrganizaMed.Infra.Migrations
 
                     b.HasIndex("MedicosEnvolvidosId");
 
-                    b.ToTable("AtividadeMedico");
+                    b.ToTable("AtividadeMedicos", (string)null);
                 });
 
             modelBuilder.Entity("Medico", b =>
@@ -51,6 +51,10 @@ namespace OrganizaMed.Infra.Migrations
                     b.Property<string>("Crm")
                         .IsRequired()
                         .HasColumnType("varchar(8)");
+
+                    b.Property<string>("Especialidade")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -75,13 +79,12 @@ namespace OrganizaMed.Infra.Migrations
                     b.Property<DateTime>("DataInicio")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TipoAtividade")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Atividades");
+                    b.ToTable("TBAtividades", (string)null);
                 });
 
             modelBuilder.Entity("AtividadeMedico", b =>

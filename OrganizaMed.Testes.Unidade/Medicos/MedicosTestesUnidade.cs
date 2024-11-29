@@ -36,7 +36,7 @@ namespace OrganizaMed.Testes.Unidade.Medicos
         public void MedicoEstaDisponivelConsultaRecuperacao()
         {
             var medico = new Medico("João Silva", "12345678", "Cardiologia");
-            var atividade = new Atividade(DateTime.Now, DateTime.Now.AddMinutes(30), TipoAtividade.Consulta);
+            var atividade = new Atividade(1, DateTime.Now, DateTime.Now.AddMinutes(30), new List < Medico > { medico }, TipoAtividade.Consulta);
             medico.AdicionarAtividade(atividade);
 
             var disponibilidade = medico.EstaDisponivel(DateTime.Now.AddHours(1), DateTime.Now.AddHours(2));
@@ -47,7 +47,7 @@ namespace OrganizaMed.Testes.Unidade.Medicos
         public void MedicoEstaDisponivelCirurgiaRecuperacao()
         {
             var medico = new Medico("João Silva", "12345678", "Cardiologia");
-            var atividade = new Atividade(DateTime.Now, DateTime.Now.AddHours(2), TipoAtividade.Cirurgia);
+            var atividade = new Atividade(1,DateTime.Now, DateTime.Now.AddHours(2), new List < Medico > { medico }, TipoAtividade.Cirurgia);
             medico.AdicionarAtividade(atividade);
 
             var disponibilidade = medico.EstaDisponivel(DateTime.Now.AddHours(5), DateTime.Now.AddHours(6));

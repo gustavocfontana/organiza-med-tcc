@@ -6,6 +6,9 @@ namespace organiza_med_tcc.Models
     public class InserirAtividadesViewModel
     {
         [Required]
+        public int Id { get; set; }
+
+        [Required]
         public DateTime DataInicio { get; set; }
 
         [Required]
@@ -17,12 +20,13 @@ namespace organiza_med_tcc.Models
         [Required]
         public List<int> MedicoId { get; set; }
 
-        [Required]
-        public List<Medico> Medicos { get; set; }
+        public IEnumerable<Medico> ? Medicos { get; set; }
     }
 
     public class EditarAtividadesViewModel
     {
+        [Required]
+        public int Id { get; set; }
 
         [Required]
         public DateTime DataInicio { get; set; }
@@ -36,7 +40,7 @@ namespace organiza_med_tcc.Models
         [Required]
         public List<int> MedicoId { get; set; }
 
-        public List<MedicoViewModel> Medicos { get; set; }
+        public IEnumerable<Medico> ? Medicos { get; set; }
     }
 
     public class MedicoViewModel
@@ -49,8 +53,14 @@ namespace organiza_med_tcc.Models
     {
         public int Id { get; set; }
         public DateTime DataInicio { get; set; }
+
         public DateTime DataTermino { get; set; }
-        public string Medico { get; set; }
+
+        public string TipoAtividade { get; set; }
+
+        public List<int> MedicoId { get; set; }
+
+        public IEnumerable<Medico> ? Medicos { get; set; }
     }
 
     public class DetalhesAtividadesViewModel

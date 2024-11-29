@@ -18,14 +18,6 @@ namespace OrganizaMed.Dominio.Atividades
         public List<Medico> MedicosEnvolvidos { get; set; } = new List<Medico>();
         public TipoAtividade TipoAtividade { get; set; }
 
-        public Atividade(DateTime dataInicio, DateTime dataFim, TipoAtividade tipoAtividade)
-        {
-            DataInicio = dataInicio;
-            DataFim = dataFim;
-            TipoAtividade = tipoAtividade;
-        }
-
-        // Novo construtor
         public Atividade(int id, DateTime dataInicio, DateTime dataFim, List<Medico> medicosEnvolvidos, TipoAtividade tipoAtividade)
         {
             Id = id;

@@ -34,7 +34,7 @@ namespace OrganizaMed.Infra.Migrations
 
                     b.HasIndex("MedicosEnvolvidosId");
 
-                    b.ToTable("AtividadeMedico");
+                    b.ToTable("AtividadeMedicos", (string)null);
                 });
 
             modelBuilder.Entity("Medico", b =>
@@ -48,6 +48,10 @@ namespace OrganizaMed.Infra.Migrations
                     b.Property<string>("Crm")
                         .IsRequired()
                         .HasColumnType("varchar(8)");
+
+                    b.Property<string>("Especialidade")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -77,7 +81,7 @@ namespace OrganizaMed.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Atividades");
+                    b.ToTable("TBAtividades", (string)null);
                 });
 
             modelBuilder.Entity("AtividadeMedico", b =>

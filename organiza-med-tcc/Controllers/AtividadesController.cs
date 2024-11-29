@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using organiza_med_tcc.Controllers.Compartilhado;
 using organiza_med_tcc.Models;
 using OrganizaMed.Aplicacao.Servicos;
@@ -51,28 +52,46 @@ namespace organiza_med_tcc.Controllers
         [HttpPost]
         public IActionResult Adicionar(InserirAtividadesViewModel inserirVm)
         {
+            Console.WriteLine("Método Adicionar foi chamado.");
+            Console.WriteLine($"Dados recebidos: {JsonConvert.SerializeObject(inserirVm)}");
+
             if (!ModelState.IsValid)
             {
+                Console.WriteLine("ModelState não é válido.");
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        Console.WriteLine($"Erro de validação: {error.ErrorMessage}");
+                    }
+                }
+
                 inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
                 return View(inserirVm);
             }
 
             var medicosIndisponiveis = servicoMedicos.VerificarDisponibilidade(inserirVm.MedicoId, inserirVm.DataInicio, inserirVm.DataTermino);
+            Console.WriteLine($"Médicos indisponíveis: {string.Join(", ", medicosIndisponiveis)}");
 
             if (medicosIndisponiveis.Any())
             {
+                Console.WriteLine("Existem médicos indisponíveis.");
                 ModelState.AddModelError("", "Os seguintes médicos não estão disponíveis no período selecionado: " + string.Join(", ", medicosIndisponiveis));
-                inserirVm.Medicos = servicoMedicos.ObterTodos().Value; 
+                inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
                 return View(inserirVm);
             }
 
             var atividade = mapeador.Map<Atividade>(inserirVm);
+            Console.WriteLine($"Dados da atividade mapeada: {JsonConvert.SerializeObject(atividade)}");
+
             var resultado = servico.Adicionar(atividade);
+            Console.WriteLine($"Resultado da adição da atividade: {resultado.IsSuccess}");
 
             if (resultado.IsFailed)
             {
+                Console.WriteLine("Falha ao adicionar atividade.");
                 ApresentarMensagemDeErro(resultado.ToResult());
-                inserirVm.Medicos = servicoMedicos.ObterTodos().Value; 
+                inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
                 return View(inserirVm);
             }
 

@@ -15,22 +15,23 @@ namespace OrganizaMed.Infra.Atividades
         {
             builder.ToTable("TBAtividades");
 
+            builder.HasKey(a => a.Id);
+
             builder.Property(a => a.Id)
-                .HasColumnType("int")
-                .ValueGeneratedOnAdd()
-                .IsRequired();
+                .ValueGeneratedOnAdd();
 
             builder.Property(a => a.DataInicio)
-                .HasColumnType("datetime")
                 .IsRequired();
 
             builder.Property(a => a.DataFim)
-                .HasColumnType("datetime")
+                .IsRequired();
+
+            builder.Property(a => a.TipoAtividade)
                 .IsRequired();
 
             builder.HasMany(a => a.MedicosEnvolvidos)
-                .WithMany()
-                .UsingEntity(j => j.ToTable("TBAtividadesMedicos"));
+                .WithMany(m => m.Atividades)
+                .UsingEntity(j => j.ToTable("AtividadeMedicos"));
         }
     }
 }
