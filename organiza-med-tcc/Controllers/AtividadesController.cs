@@ -120,22 +120,50 @@ namespace organiza_med_tcc.Controllers
         [HttpPost]
         public IActionResult Atualizar(EditarAtividadesViewModel editarVM)
         {
+            Console.WriteLine("Método Editar foi chamado.");
+            Console.WriteLine($"Dados recebidos: {JsonConvert.SerializeObject(editarVM)}");
+
             if (!ModelState.IsValid)
+            {
+                Console.WriteLine("ModelState não é válido.");
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        Console.WriteLine($"Erro de validação: {error.ErrorMessage}");
+                    }
+                }
+
+                editarVM.Medicos = servicoMedicos.ObterTodos().Value;
                 return View(editarVM);
+            }
+
+            var medicosIndisponiveis = servicoMedicos.VerificarDisponibilidade(editarVM.MedicoId, editarVM.DataInicio, editarVM.DataTermino);
+            Console.WriteLine($"Médicos indisponíveis: {string.Join(", ", medicosIndisponiveis)}");
+
+            if (medicosIndisponiveis.Any())
+            {
+                Console.WriteLine("Existem médicos indisponíveis.");
+                ModelState.AddModelError("", "Os seguintes médicos não estão disponíveis no período selecionado: " + string.Join(", ", medicosIndisponiveis));
+                editarVM.Medicos = servicoMedicos.ObterTodos().Value;
+                return View(editarVM);
+            }
 
             var atividade = mapeador.Map<Atividade>(editarVM);
+            Console.WriteLine($"Dados da atividade mapeada: {JsonConvert.SerializeObject(atividade)}");
 
-            var resultado = servico.Atualizar(atividade);
+            var resultado = servico.Adicionar(atividade);
+            Console.WriteLine($"Resultado da adição da atividade: {resultado.IsSuccess}");
 
             if (resultado.IsFailed)
             {
+                Console.WriteLine("Falha ao adicionar atividade.");
                 ApresentarMensagemDeErro(resultado.ToResult());
-
-                return RedirectToAction(nameof ( Listar ));
+                editarVM.Medicos = servicoMedicos.ObterTodos().Value;
+                return View(editarVM);
             }
 
-            ApresentarMensagemDeErro(resultado.ToResult());
-
+            ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
             return RedirectToAction(nameof ( Listar ));
         }
 

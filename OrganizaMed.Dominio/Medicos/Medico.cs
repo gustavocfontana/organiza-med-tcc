@@ -1,4 +1,5 @@
-﻿using OrganizaMed.Dominio.Atividades;
+﻿using System.Text.RegularExpressions;
+using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Dominio.Compartilhado;
 
 public class Medico : EntidadeBase
@@ -34,6 +35,11 @@ public class Medico : EntidadeBase
             erros.Add("Nome inválido");
         if (Crm.Length < 8)
             erros.Add("CRM inválido");
+
+        var crmRegex = new Regex(@"^\d{5}-[A-Z]{2}$");
+        if (!crmRegex.IsMatch(Crm))
+            erros.Add("CRM inválido. Deve ser no formato 12345-XX");
+
         if (string.IsNullOrWhiteSpace(Especialidade))
             erros.Add("Especialidade inválida");
 

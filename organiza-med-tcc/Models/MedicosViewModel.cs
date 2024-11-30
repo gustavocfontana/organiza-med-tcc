@@ -40,6 +40,7 @@ namespace organiza_med_tcc.Models
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Crm { get; set; }
+        public string Especialidade { get; set; }
     }
 
     public class DetalhesMedicosViewModel
@@ -47,6 +48,7 @@ namespace organiza_med_tcc.Models
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Crm { get; set; }
+        public string Especialidade { get; set; }
     }
 
     public class TopMedicosViewModel
