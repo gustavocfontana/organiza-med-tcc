@@ -19,8 +19,15 @@ namespace OrganizaMed.Aplicacao.Servicos
 
         public Result<Atividade> Adicionar(Atividade atividade)
         {
-            repositorioAtividade.Adicionar(atividade);
+            var atividadeExistente = repositorioAtividade.ObterTodos().FirstOrDefault(a =>
+                a.DataInicio == atividade.DataInicio &&
+                a.DataFim == atividade.DataFim &&
+                a.TipoAtividade == atividade.TipoAtividade);
 
+            if (atividadeExistente != null)
+                return Result.Fail<Atividade>("Atividade já cadastrada.");
+
+            repositorioAtividade.Adicionar(atividade);
             return Result.Ok(atividade);
         }
 

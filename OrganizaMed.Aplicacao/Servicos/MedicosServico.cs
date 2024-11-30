@@ -19,8 +19,11 @@ namespace OrganizaMed.Aplicacao.Servicos
 
         public Result<Medico> Adicionar(Medico medico)
         {
-            repositorioMedico.Adicionar(medico);
+            var medicoExistente = repositorioMedico.ObterTodos().FirstOrDefault(m => m.Crm == medico.Crm);
+            if (medicoExistente != null)
+                return Result.Fail<Medico>("Médico já cadastrado.");
 
+            repositorioMedico.Adicionar(medico);
             return Result.Ok(medico);
         }
 
