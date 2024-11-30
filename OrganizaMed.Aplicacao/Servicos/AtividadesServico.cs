@@ -59,6 +59,8 @@ namespace OrganizaMed.Aplicacao.Servicos
             if (atividade == null)
                 return Result.Fail<Atividade>("Atividade não encontrada");
 
+            atividade.MedicosEnvolvidos = repositorioAtividade.ObterMedicosEnvolvidos(atividadeId);
+
             return Result.Ok(atividade);
         }
 

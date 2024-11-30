@@ -66,5 +66,6 @@ namespace organiza_med_tcc.Models
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public string TipoAtividade { get; set; }
+        public IEnumerable<Medico> MedicosEnvolvidos { get; set; }
     }
 }

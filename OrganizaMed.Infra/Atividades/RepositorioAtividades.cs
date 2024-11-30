@@ -19,5 +19,14 @@ namespace OrganizaMed.Infra.Atividades
         {
             return dbContext.Atividades;
         }
+
+        public List<Medico> ObterMedicosEnvolvidos(int atividadeId)
+        {
+            var atividade = dbContext.Atividades
+                .Include(a => a.MedicosEnvolvidos)
+                .FirstOrDefault(a => a.Id == atividadeId);
+
+            return atividade?.MedicosEnvolvidos;
+        }
     }
 }

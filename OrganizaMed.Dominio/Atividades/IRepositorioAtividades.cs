@@ -9,6 +9,5 @@ namespace OrganizaMed.Dominio.Atividades
 {
     public interface IRepositorioAtividades : IRepositorio<Atividade>
     {
-
     }
 }

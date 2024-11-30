@@ -7,5 +7,6 @@
         void Atualizar(T entidade);
         void Remover(T entidade);
         List<T> ObterTodos();
+        List<Medico> ObterMedicosEnvolvidos(int atividadeId);
     }
 }
