@@ -26,5 +26,9 @@ public class MapeadorMedicos : IEntityTypeConfiguration<Medico>
         builder.Property(m => m.Especialidade)
             .HasColumnType("varchar(100)")
             .IsRequired();
+
+        builder.Property(m => m.HorasTrabalhadas)
+            .HasColumnType("float")
+            .IsRequired();
     }
 }

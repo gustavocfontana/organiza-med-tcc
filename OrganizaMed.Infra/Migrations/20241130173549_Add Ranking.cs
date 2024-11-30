@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OrganizaMed.Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class Addfirst : Migration
+    public partial class AddRanking : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,9 @@ namespace OrganizaMed.Infra.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "varchar(100)", nullable: false),
                     Crm = table.Column<string>(type: "varchar(8)", nullable: false),
-                    Especialidade = table.Column<string>(type: "varchar(100)", nullable: false)
+                    Especialidade = table.Column<string>(type: "varchar(100)", nullable: false),
+                    HorasTrabalhadas = table.Column<double>(type: "float", nullable: false),
+                    Ranking = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

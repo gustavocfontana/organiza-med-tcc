@@ -53,9 +53,15 @@ namespace OrganizaMed.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
+                    b.Property<double>("HorasTrabalhadas")
+                        .HasColumnType("float");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
+
+                    b.Property<int>("Ranking")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

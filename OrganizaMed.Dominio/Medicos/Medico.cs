@@ -10,21 +10,14 @@ public class Medico : EntidadeBase
     public string Crm { get; set; }
     public string Especialidade { get; set; }
     public List<Atividade> Atividades { get; set; } = new List<Atividade>();
+    public double HorasTrabalhadas { get; set; } 
+    public int Ranking { get; set; }
 
     public Medico(string nome, string crm, string especialidade)
     {
         Nome = nome;
         Crm = crm;
         Especialidade = especialidade;
-    }
-
-    public Medico(int id, string nome, string crm, string especialidade, List<Atividade> atividades)
-    {
-        Id = id;
-        Nome = nome;
-        Crm = crm;
-        Especialidade = especialidade;
-        Atividades = atividades ?? new List<Atividade>();
     }
 
     public override List<string> Validar()
@@ -57,5 +50,28 @@ public class Medico : EntidadeBase
             throw new Exception("Médico não disponível");
 
         Atividades.Add(atividade);
+    }
+
+    public void CalcularHorasTrabalhadas()
+    {
+        HorasTrabalhadas = Atividades.Sum(a => (a.DataFim - a.DataInicio).TotalHours);
+    }
+
+    public void AtualizarRanking(List<Medico> medicos)
+    {
+        // Calcular horas trabalhadas para todos os médicos
+        foreach (var medico in medicos)
+        {
+            medico.CalcularHorasTrabalhadas();
+        }
+
+        // Ordenar médicos por horas trabalhadas em ordem decrescente
+        var medicosOrdenados = medicos.OrderByDescending(m => m.HorasTrabalhadas).ToList();
+
+        // Atualizar ranking
+        for (int i = 0; i < medicosOrdenados.Count; i++)
+        {
+            medicosOrdenados[i].Ranking = i + 1;
+        }
     }
 }

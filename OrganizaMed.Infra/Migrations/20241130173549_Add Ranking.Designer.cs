@@ -12,8 +12,8 @@ using OrganizaMed.Infra.Compartilhado;
 namespace OrganizaMed.Infra.Migrations
 {
     [DbContext(typeof(OrganizaMedDbContext))]
-    [Migration("20241129191513_Add first")]
-    partial class Addfirst
+    [Migration("20241130173549_Add Ranking")]
+    partial class AddRanking
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,9 +56,15 @@ namespace OrganizaMed.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
+                    b.Property<double>("HorasTrabalhadas")
+                        .HasColumnType("float");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
+
+                    b.Property<int>("Ranking")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

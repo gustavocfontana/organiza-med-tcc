@@ -159,37 +159,20 @@ namespace organiza_med_tcc.Controllers
             return View(detalhesVm);
         }
 
-        public IActionResult TopTrabalhadores(DateTime dataInicio, DateTime dataFim)
+        public IActionResult TopTrabalhadores()
         {
-            var resultado = servico.ObterTodos();
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemDeErro(resultado.ToResult());
-                return RedirectToAction("Index", "Home");
-            }
-
-            var medicos = resultado.Value;
-
-            var topMedicos = medicos.Select(medico => new
-                {
-                    Medico = medico,
-                    HorasTrabalhadas = medico.Atividades
-                        .Where(a => a.DataInicio >= dataInicio && a.DataFim <= dataFim)
-                        .Sum(a => ( a.DataFim - a.DataInicio ).TotalHours)
-                })
+            servico.AtualizarRanking();
+            var topMedicos = servico.ObterTodos().Value
                 .OrderByDescending(m => m.HorasTrabalhadas)
                 .Take(10)
-                .ToList();
-
-            var topMedicosViewModel = topMedicos.Select(m => new TopMedicosViewModel
+                .Select(m => new TopMedicosViewModel
                 {
-                    Id = m.Medico.Id,
-                    Nome = m.Medico.Nome,
+                    Id = m.Id,
+                    Nome = m.Nome,
                     HorasTrabalhadas = m.HorasTrabalhadas
-                })
-                .ToList();
+                }).ToList();
 
-            return View(topMedicosViewModel);
+            return View(topMedicos);
         }
     }
 }

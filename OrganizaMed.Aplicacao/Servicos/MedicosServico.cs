@@ -69,21 +69,39 @@ namespace OrganizaMed.Aplicacao.Servicos
             return Result.Ok(medicos);
         }
 
-        public IEnumerable<string> VerificarDisponibilidade(IEnumerable<int> medicoIds, DateTime dataInicio, DateTime dataTermino)
+        public IEnumerable<string> VerificarDisponibilidade(IEnumerable<int> medicoIds, DateTime dataInicio, DateTime dataFim)
         {
             var medicosIndisponiveis = new List<string>();
 
             foreach (var medicoId in medicoIds)
             {
                 var medico = ObterPorId(medicoId).Value;
-                if (medico.Atividades.Any(a => a.DataInicio < dataTermino && a.DataFim > dataInicio))
-                    if (medico != null && !medico.EstaDisponivel(dataInicio, dataTermino))
+                if (medico.Atividades.Any(a => a.DataInicio < dataFim && a.DataFim > dataInicio))
+                    if (medico != null && !medico.EstaDisponivel(dataInicio, dataFim))
                     {
                         medicosIndisponiveis.Add(medico.Nome);
                     }
             }
 
             return medicosIndisponiveis;
+        }
+
+        public void AtualizarRanking()
+        {
+            var medicos = repositorioMedico.ObterTodos();
+
+            foreach (var medico in medicos)
+            {
+                medico.CalcularHorasTrabalhadas();
+            }
+
+            var medicosOrdenados = medicos.OrderByDescending(m => m.HorasTrabalhadas).ToList();
+
+            for ( int i = 0 ; i < medicosOrdenados.Count ; i++ )
+            {
+                medicosOrdenados[i].Ranking = i + 1;
+                repositorioMedico.Atualizar(medicosOrdenados[i]);
+            }
         }
     }
 }

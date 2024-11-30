@@ -32,7 +32,7 @@ namespace organiza_med_tcc.Models
         public DateTime DataInicio { get; set; }
 
         [Required]
-        public DateTime DataTermino { get; set; }
+        public DateTime DataFim { get; set; }
 
         [Required]
         public string TipoAtividade { get; set; }

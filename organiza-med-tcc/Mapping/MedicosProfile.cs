@@ -14,6 +14,7 @@ namespace organiza_med_tcc.Mapping
             CreateMap<Medico, ListarMedicosViewModel>();
             CreateMap<Medico, DetalhesMedicosViewModel>();
             CreateMap<Medico, EditarMedicosViewModel>();
+            CreateMap<Medico, TopMedicosViewModel>();
         }
     }
 }
