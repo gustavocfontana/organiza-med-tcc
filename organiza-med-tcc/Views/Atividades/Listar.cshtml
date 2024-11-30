@@ -5,7 +5,6 @@
 }
 
 <div class="col">
-
     <a class="btn btn-primary px-4 mt-3" asp-controller="Atividades" asp-action="Adicionar">
         <i class="bi bi-circle-add"></i>
         Inserir nova Atividade
@@ -16,40 +15,40 @@
         {
             <div class="card col-lg-4 col-xl-3">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="p-0">@atividadeVm.Id</h5>
+                    <h5 class="custom-card-font-color p-0">@atividadeVm.Id</h5>
 
                     <div class="text-end d-flex align-items-center gap-3">
                         <a title="Detalhes"
-                           class="text-info-emphasis fs-5"
+                           class="text-info-emphasis fs-5 custom-card-font-color"
                            href="/Atividades/Detalhes/@atividadeVm.Id">
                             <i class="bi bi-search"></i>
                         </a>
                         <a title="Atualizar"
-                           class="text-info-emphasis fs-5"
+                           class="text-info-emphasis fs-5 custom-card-font-color"
                            href="/Atividades/Atualizar/@atividadeVm.Id">
                             <i class="bi bi-pencil-fill"></i>
                         </a>
                         <a title="Excluir"
-                           class="text-info-emphasis fs-5" href="/Atividades/Excluir/@atividadeVm.Id">
+                           class="text-info-emphasis fs-5 custom-card-font-color" href="/Atividades/Excluir/@atividadeVm.Id">
                             <i class="bi bi-trash-fill"></i>
                         </a>
                     </div>
                 </div>
 
                 <div class="card-body">
-                    <h5 class="card-title">@atividadeVm.Medicos</h5>
+                    <h5 class="card-title custom-card-font-color">@atividadeVm.Medicos</h5>
                 </div>
 
                 <div class="card-body">
-                    <h5 class="card-title">@atividadeVm.DataInicio</h5>
+                    <h5 class="card-title custom-card-font-color">@atividadeVm.DataInicio</h5>
                 </div>
 
                 <div class="card-body">
-                    <h5 class="card-title">@atividadeVm.DataTermino</h5>
+                    <h5 class="card-title custom-card-font-color">@atividadeVm.DataFim</h5>
                 </div>
 
                 <div class="card-body">
-                    <h5 class="card-title">@atividadeVm.TipoAtividade</h5>
+                    <h5 class="card-title custom-card-font-color">@atividadeVm.TipoAtividade</h5>
                 </div>
 
             </div>

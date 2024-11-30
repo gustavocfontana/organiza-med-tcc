@@ -1,4 +1,6 @@
-﻿@model EditarAtividadesViewModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using OrganizaMed.Dominio.Atividades
+@model EditarAtividadesViewModel
 
 @{
     ViewBag.Title = "Atualizar Atividade";
@@ -8,15 +10,26 @@
     <div class="row gap-3 my-3 my-xl-5">
         <form class="col-lg-6 d-grid gap-3 fs-5" asp-action="Atualizar">
 
+            <div class="form-group">
+                <label asp-for="TipoAtividade" class="control-label"></label>
+                <select asp-for="TipoAtividade" class="form-control">
+                    @foreach (var tipo in Enum.GetValues(typeof(TipoAtividade)))
+                    {
+                        <option value="@tipo">@tipo</option>
+                    }
+                </select>
+                <span asp-validation-for="TipoAtividade" class="text-danger"></span>
+            </div>
+
             <div>
                 <label class="control-label fw-semibold mb-1">Data de Inicio</label>
-                <input class="form-control mb-1" asp-for="DataInicio" />
+                <input class="form-control mb-1" asp-for="DataInicio"/>
                 <span class="text-danger fs-6" asp-validation-for="DataInicio"></span>
             </div>
 
             <div>
                 <label class="control-label fw-semibold mb-1">Data de Termino</label>
-                <input class="form-control mb-1" asp-for="DataTermino" />
+                <input class="form-control mb-1" asp-for="DataTermino"/>
                 <span class="text-danger fs-6" asp-validation-for="DataTermino"></span>
             </div>
 

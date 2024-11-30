@@ -28,5 +28,9 @@ body {
 
 /* Estilo para o modo noturno */
 body.dark-mode .top-medicos-table {
-  color: #ffa07a; /* Cor da fonte no modo noturno */
+  color: #ff6347; /* Cor da fonte no modo noturno */
+}
+
+.custom-card-font-color {
+  color: #000000; /* Substitua pela cor desejada */
 }

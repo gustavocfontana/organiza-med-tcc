@@ -12,7 +12,7 @@ namespace organiza_med_tcc.Models
         public DateTime DataInicio { get; set; }
 
         [Required]
-        public DateTime DataTermino { get; set; }
+        public DateTime DataFim { get; set; }
 
         [Required]
         public string TipoAtividade { get; set; }
@@ -37,9 +37,6 @@ namespace organiza_med_tcc.Models
         [Required]
         public string TipoAtividade { get; set; }
 
-        [Required]
-        public List<int> MedicoId { get; set; }
-
         public IEnumerable<Medico> ? Medicos { get; set; }
     }
 
@@ -54,7 +51,7 @@ namespace organiza_med_tcc.Models
         public int Id { get; set; }
         public DateTime DataInicio { get; set; }
 
-        public DateTime DataTermino { get; set; }
+        public DateTime DataFim { get; set; }
 
         public string TipoAtividade { get; set; }
 
@@ -67,7 +64,7 @@ namespace organiza_med_tcc.Models
     {
         public int Id { get; set; }
         public DateTime DataInicio { get; set; }
-        public DateTime DataTermino { get; set; }
-        public string Medico { get; set; }
+        public DateTime DataFim { get; set; }
+        public string TipoAtividade { get; set; }
     }
 }

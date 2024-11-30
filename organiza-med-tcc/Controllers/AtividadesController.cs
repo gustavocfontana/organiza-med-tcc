@@ -49,55 +49,56 @@ namespace organiza_med_tcc.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        public IActionResult Adicionar(InserirAtividadesViewModel inserirVm)
+       [HttpPost]
+public IActionResult Adicionar(InserirAtividadesViewModel inserirVm)
+{
+    Console.WriteLine("Método Adicionar foi chamado.");
+    Console.WriteLine($"DataInicio: {inserirVm.DataInicio}");
+    Console.WriteLine($"DataFim: {inserirVm.DataFim}");
+
+    if (!ModelState.IsValid)
+    {
+        Console.WriteLine("ModelState não é válido.");
+        foreach (var modelState in ModelState.Values)
         {
-            Console.WriteLine("Método Adicionar foi chamado.");
-            Console.WriteLine($"Dados recebidos: {JsonConvert.SerializeObject(inserirVm)}");
-
-            if (!ModelState.IsValid)
+            foreach (var error in modelState.Errors)
             {
-                Console.WriteLine("ModelState não é válido.");
-                foreach (var modelState in ModelState.Values)
-                {
-                    foreach (var error in modelState.Errors)
-                    {
-                        Console.WriteLine($"Erro de validação: {error.ErrorMessage}");
-                    }
-                }
-
-                inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
-                return View(inserirVm);
+                Console.WriteLine($"Erro de validação: {error.ErrorMessage}");
             }
-
-            var medicosIndisponiveis = servicoMedicos.VerificarDisponibilidade(inserirVm.MedicoId, inserirVm.DataInicio, inserirVm.DataTermino);
-            Console.WriteLine($"Médicos indisponíveis: {string.Join(", ", medicosIndisponiveis)}");
-
-            if (medicosIndisponiveis.Any())
-            {
-                Console.WriteLine("Existem médicos indisponíveis.");
-                ModelState.AddModelError("", "Os seguintes médicos não estão disponíveis no período selecionado: " + string.Join(", ", medicosIndisponiveis));
-                inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
-                return View(inserirVm);
-            }
-
-            var atividade = mapeador.Map<Atividade>(inserirVm);
-            Console.WriteLine($"Dados da atividade mapeada: {JsonConvert.SerializeObject(atividade)}");
-
-            var resultado = servico.Adicionar(atividade);
-            Console.WriteLine($"Resultado da adição da atividade: {resultado.IsSuccess}");
-
-            if (resultado.IsFailed)
-            {
-                Console.WriteLine("Falha ao adicionar atividade.");
-                ApresentarMensagemDeErro(resultado.ToResult());
-                inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
-                return View(inserirVm);
-            }
-
-            ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
-            return RedirectToAction(nameof ( Listar ));
         }
+
+        inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
+        return View(inserirVm);
+    }
+
+    var medicosIndisponiveis = servicoMedicos.VerificarDisponibilidade(inserirVm.MedicoId, inserirVm.DataInicio, inserirVm.DataFim);
+    Console.WriteLine($"Médicos indisponíveis: {string.Join(", ", medicosIndisponiveis)}");
+
+    if (medicosIndisponiveis.Any())
+    {
+        Console.WriteLine("Existem médicos indisponíveis.");
+        ModelState.AddModelError("", "Os seguintes médicos não estão disponíveis no período selecionado: " + string.Join(", ", medicosIndisponiveis));
+        inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
+        return View(inserirVm);
+    }
+
+    var atividade = mapeador.Map<Atividade>(inserirVm);
+    Console.WriteLine($"Dados da atividade mapeada: {JsonConvert.SerializeObject(atividade)}");
+
+    var resultado = servico.Adicionar(atividade);
+    Console.WriteLine($"Resultado da adição da atividade: {resultado.IsSuccess}");
+
+    if (resultado.IsFailed)
+    {
+        Console.WriteLine("Falha ao adicionar atividade.");
+        ApresentarMensagemDeErro(resultado.ToResult());
+        inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
+        return View(inserirVm);
+    }
+
+    ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
+    return RedirectToAction(nameof(Listar));
+}
 
         public IActionResult Atualizar(int id)
         {
@@ -138,26 +139,15 @@ namespace organiza_med_tcc.Controllers
                 return View(editarVM);
             }
 
-            var medicosIndisponiveis = servicoMedicos.VerificarDisponibilidade(editarVM.MedicoId, editarVM.DataInicio, editarVM.DataTermino);
-            Console.WriteLine($"Médicos indisponíveis: {string.Join(", ", medicosIndisponiveis)}");
-
-            if (medicosIndisponiveis.Any())
-            {
-                Console.WriteLine("Existem médicos indisponíveis.");
-                ModelState.AddModelError("", "Os seguintes médicos não estão disponíveis no período selecionado: " + string.Join(", ", medicosIndisponiveis));
-                editarVM.Medicos = servicoMedicos.ObterTodos().Value;
-                return View(editarVM);
-            }
-
             var atividade = mapeador.Map<Atividade>(editarVM);
             Console.WriteLine($"Dados da atividade mapeada: {JsonConvert.SerializeObject(atividade)}");
 
-            var resultado = servico.Adicionar(atividade);
-            Console.WriteLine($"Resultado da adição da atividade: {resultado.IsSuccess}");
+            var resultado = servico.Atualizar(atividade);
+            Console.WriteLine($"Resultado da edicao da atividade: {resultado.IsSuccess}");
 
             if (resultado.IsFailed)
             {
-                Console.WriteLine("Falha ao adicionar atividade.");
+                Console.WriteLine("Falha ao editar atividade.");
                 ApresentarMensagemDeErro(resultado.ToResult());
                 editarVM.Medicos = servicoMedicos.ObterTodos().Value;
                 return View(editarVM);
