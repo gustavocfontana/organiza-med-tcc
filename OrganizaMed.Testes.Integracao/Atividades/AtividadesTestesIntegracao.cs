@@ -26,6 +26,7 @@ namespace OrganizaMed.Testes.Integracao.Atividades
             dbContext = new OrganizaMedDbContext();
 
             dbContext.Atividades.RemoveRange(dbContext.Atividades);
+            dbContext.SaveChanges();
 
             repositorio = new RepositorioAtividades(dbContext);
             servico = new AtividadesServico(repositorio);
@@ -43,16 +44,29 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         [TestMethod]
         public void DeveInserirAtividade()
         {
-            var atividade = Builder<Atividade>
-                .CreateNew()
-                .With(a => a.DataInicio = DateTime.Now)
-                .With(a => a.DataFim = DateTime.Now.AddHours(1))
-                .Persist();
+            // Arrange
+            var dataInicio = DateTime.Now;
+            var dataFim = dataInicio.AddHours(1);
+            var medicos = new List<Medico> { new Medico("Dr. Test", "12345678", "Cardiologia") };
 
+            var atividade = new Atividade(
+                id: 0,
+                dataInicio: dataInicio,
+                dataFim: dataFim,
+                medicosEnvolvidos: medicos,
+                tipoAtividade: TipoAtividade.Consulta
+            );
+
+            // Act
             var resultado = servico.Adicionar(atividade);
 
+            // Assert
             Assert.IsTrue(resultado.IsSuccess);
             Assert.IsNotNull(resultado.Value);
+            Assert.AreEqual(dataInicio, resultado.Value.DataInicio);
+            Assert.AreEqual(dataFim, resultado.Value.DataFim);
+            Assert.AreEqual(TipoAtividade.Consulta, resultado.Value.TipoAtividade);
+            Assert.IsTrue(resultado.Value.MedicosEnvolvidos.Any());
         }
 
         [TestMethod]
@@ -60,6 +74,7 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         {
             var atividade = Builder<Atividade>
                 .CreateNew()
+                .With(a => a.Id = 0) // Garantir que o Id não seja configurado explicitamente
                 .With(a => a.DataInicio = DateTime.Now)
                 .With(a => a.DataFim = DateTime.Now.AddHours(1))
                 .Persist();
@@ -76,6 +91,7 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         {
             var atividade = Builder<Atividade>
                 .CreateNew()
+                .With(a => a.Id = 0) // Garantir que o Id não seja configurado explicitamente
                 .With(a => a.DataInicio = DateTime.Now)
                 .With(a => a.DataFim = DateTime.Now.AddHours(1))
                 .Persist();
@@ -91,6 +107,7 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         {
             var atividade = Builder<Atividade>
                 .CreateNew()
+                .With(a => a.Id = 0) // Garantir que o Id não seja configurado explicitamente
                 .With(a => a.DataInicio = DateTime.Now)
                 .With(a => a.DataFim = DateTime.Now.AddHours(1))
                 .Persist();
@@ -107,6 +124,7 @@ namespace OrganizaMed.Testes.Integracao.Atividades
             var atividades = Builder<Atividade>
                 .CreateListOfSize(5)
                 .All()
+                .With(a => a.Id = 0) // Garantir que o Id não seja configurado explicitamente
                 .With(a => a.DataInicio = DateTime.Now)
                 .With(a => a.DataFim = DateTime.Now.AddHours(1))
                 .Persist();
@@ -115,6 +133,34 @@ namespace OrganizaMed.Testes.Integracao.Atividades
 
             Assert.IsTrue(resultado.IsSuccess);
             Assert.AreEqual(5, resultado.Value.Count);
+        }
+
+        [TestMethod]
+        public void ObterMedicosEnvolvidos_DeveRetornarMedicosParaAtividade()
+        {
+            // Arrange
+            var medico = new Medico("Dr. Test", "12345678", "Cardiologia");
+            var dataInicio = DateTime.Now;
+            var dataFim = dataInicio.AddHours(1);
+
+            var atividade = new Atividade(
+                id: 0,
+                dataInicio: dataInicio,
+                dataFim: dataFim,
+                medicosEnvolvidos: new List<Medico> { medico },
+                tipoAtividade: TipoAtividade.Consulta
+            );
+
+            repositorio.Adicionar(atividade);
+
+            // Act
+            var medicosEnvolvidos = repositorio.ObterMedicosEnvolvidos(atividade.Id);
+
+            // Assert
+            Assert.IsNotNull(medicosEnvolvidos);
+            Assert.IsTrue(medicosEnvolvidos.Count > 0);
+            Assert.AreEqual(medico.Nome, medicosEnvolvidos[0].Nome);
+            Assert.AreEqual(medico.Crm, medicosEnvolvidos[0].Crm);
         }
     }
 }

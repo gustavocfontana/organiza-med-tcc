@@ -21,11 +21,6 @@ namespace OrganizaMed.Infra.Compartilhado
 
         public void Adicionar(T entidade)
         {
-            if (entidade.Id != 0)
-            {
-                entidade.Id = 0;
-            }
-
             ObterRegistros().Add(entidade);
             dbContext.SaveChanges();
         }

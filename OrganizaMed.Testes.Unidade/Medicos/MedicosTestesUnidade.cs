@@ -53,6 +53,86 @@ namespace OrganizaMed.Testes.Unidade.Medicos
             var disponibilidade = medico.EstaDisponivel(DateTime.Now.AddHours(5), DateTime.Now.AddHours(6));
             Assert.IsFalse(disponibilidade);
         }
+
+        [TestMethod]
+        public void DeveCalcularHorasTrabalhadasCorretamente()
+        {
+            var medico = new Medico("João Silva", "12345678", "Cardiologia");
+            var atividade1 = new Atividade(1, DateTime.Now.AddHours(-5), DateTime.Now.AddHours(-3), new List<Medico> { medico }, TipoAtividade.Consulta);
+            var atividade2 = new Atividade(2, DateTime.Now.AddHours(-2), DateTime.Now.AddHours(-1), new List<Medico> { medico }, TipoAtividade.Cirurgia);
+            medico.AdicionarAtividade(atividade1);
+            medico.AdicionarAtividade(atividade2);
+
+            medico.CalcularHorasTrabalhadas();
+
+            double expectedHorasTrabalhadas = 3.0; // 2 horas da primeira atividade + 1 hora da segunda atividade
+            double actualHorasTrabalhadas = medico.HorasTrabalhadas;
+            double tolerance = 0.00000001;
+
+            Assert.IsTrue(Math.Abs(expectedHorasTrabalhadas - actualHorasTrabalhadas) < tolerance);
+        }
+
+        [TestMethod]
+        public void DeveAtualizarRankingCorretamente()
+        {
+            var medico1 = new Medico("João Silva", "12345678", "Cardiologia");
+            var medico2 = new Medico("Maria Souza", "87654321", "Pediatria");
+
+            var atividade1 = new Atividade(1, DateTime.Now.AddHours(-5), DateTime.Now.AddHours(-3), new List<Medico> { medico1 }, TipoAtividade.Consulta);
+            var atividade2 = new Atividade(2, DateTime.Now.AddHours(-2), DateTime.Now.AddHours(-1), new List<Medico> { medico2 }, TipoAtividade.Cirurgia);
+
+            medico1.AdicionarAtividade(atividade1);
+            medico2.AdicionarAtividade(atividade2);
+
+            var medicos = new List<Medico> { medico1, medico2 };
+            medico1.AtualizarRanking(medicos);
+
+            Assert.AreEqual(1, medico1.Ranking);
+            Assert.AreEqual(2, medico2.Ranking);
+        }
+
+        [TestMethod]
+        public void MedicoNaoEstaDisponivelComAtividadesSobrepostas()
+        {
+            var medico = new Medico("João Silva", "12345678", "Cardiologia");
+            var atividade1 = new Atividade(1, DateTime.Now, DateTime.Now.AddHours(2), new List<Medico> { medico }, TipoAtividade.Consulta);
+            var atividade2 = new Atividade(2, DateTime.Now.AddHours(1), DateTime.Now.AddHours(3), new List<Medico> { medico }, TipoAtividade.Cirurgia);
+
+            medico.AdicionarAtividade(atividade1);
+
+            Assert.ThrowsException<Exception>(() => medico.AdicionarAtividade(atividade2), "Médico não disponível");
+        }
+
+        [TestMethod]
+        public void DeveAtualizarRankingComMedicosComHorasIguais()
+        {
+            var medico1 = new Medico("João Silva", "12345678", "Cardiologia");
+            var medico2 = new Medico("Maria Souza", "87654321", "Pediatria");
+
+            var dataInicio = new DateTime(2023, 10, 1, 8, 0, 0);
+            var dataFim = new DateTime(2023, 10, 1, 10, 0, 0);
+
+            var atividade1 = new Atividade(1, dataInicio, dataFim, new List<Medico> { medico1 }, TipoAtividade.Consulta);
+            var atividade2 = new Atividade(2, dataInicio, dataFim, new List<Medico> { medico2 }, TipoAtividade.Cirurgia);
+
+            medico1.AdicionarAtividade(atividade1);
+            medico2.AdicionarAtividade(atividade2);
+
+            var medicos = new List<Medico> { medico1, medico2 };
+            medico1.AtualizarRanking(medicos);
+
+            Assert.AreEqual(1, medico1.Ranking);
+            Assert.AreEqual(1, medico2.Ranking);
+        }
+
+        [TestMethod]
+        public void DeveCalcularHorasTrabalhadasSemAtividades()
+        {
+            var medico = new Medico("João Silva", "12345678", "Cardiologia");
+            medico.CalcularHorasTrabalhadas();
+
+            Assert.AreEqual(0, medico.HorasTrabalhadas);
+        }
     }
 }
 

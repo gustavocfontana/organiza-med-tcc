@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OrganizaMed.Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRanking : Migration
+    public partial class _99tentativa : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

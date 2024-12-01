@@ -30,5 +30,8 @@ public class MapeadorMedicos : IEntityTypeConfiguration<Medico>
         builder.Property(m => m.HorasTrabalhadas)
             .HasColumnType("float")
             .IsRequired();
+        builder.HasMany(m => m.Atividades)
+            .WithMany(a => a.MedicosEnvolvidos)
+            .UsingEntity(j => j.ToTable("MedicoAtividades"));
     }
 }

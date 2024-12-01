@@ -28,5 +28,13 @@ namespace OrganizaMed.Infra.Atividades
 
             return atividade?.MedicosEnvolvidos;
         }
+
+        public List<Atividade> ObterAtividadesPorMedico(int medicoId)
+        {
+            return dbContext.Atividades
+                .Include(a => a.MedicosEnvolvidos)
+                .Where(a => a.MedicosEnvolvidos.Any(m => m.Id == medicoId))
+                .ToList();
+        }
     }
 }

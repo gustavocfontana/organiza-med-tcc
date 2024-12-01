@@ -69,9 +69,14 @@ public class Medico : EntidadeBase
         var medicosOrdenados = medicos.OrderByDescending(m => m.HorasTrabalhadas).ToList();
 
         // Atualizar ranking
-        for (int i = 0; i < medicosOrdenados.Count; i++)
+        int ranking = 1;
+        for ( int i = 0 ; i < medicosOrdenados.Count ; i++ )
         {
-            medicosOrdenados[i].Ranking = i + 1;
+            if (i > 0 && medicosOrdenados[i].HorasTrabalhadas < medicosOrdenados[i - 1].HorasTrabalhadas)
+            {
+                ranking = i + 1;
+            }
+            medicosOrdenados[i].Ranking = ranking;
         }
     }
 }

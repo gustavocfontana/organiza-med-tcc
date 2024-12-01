@@ -12,8 +12,8 @@ using OrganizaMed.Infra.Compartilhado;
 namespace OrganizaMed.Infra.Migrations
 {
     [DbContext(typeof(OrganizaMedDbContext))]
-    [Migration("20241130173549_Add Ranking")]
-    partial class AddRanking
+    [Migration("20241201174401_99 tentativa")]
+    partial class _99tentativa
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
