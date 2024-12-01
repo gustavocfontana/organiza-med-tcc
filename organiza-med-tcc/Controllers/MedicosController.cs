@@ -159,7 +159,7 @@ namespace organiza_med_tcc.Controllers
             return View(detalhesVm);
         }
 
-        public IActionResult TopTrabalhadores()
+        public IActionResult TopMedicos()
         {
             servico.AtualizarRanking();
             var topMedicos = servico.ObterTodos().Value

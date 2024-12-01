@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentResults;
+using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Dominio.Medicos;
 
 namespace OrganizaMed.Aplicacao.Servicos
@@ -11,10 +12,12 @@ namespace OrganizaMed.Aplicacao.Servicos
     public class MedicosServico
     {
         private readonly IRepositorioMedicos repositorioMedico;
+        private readonly IRepositorioAtividades repositorioAtividade;
 
         public MedicosServico(IRepositorioMedicos repositorioMedico)
         {
             this.repositorioMedico = repositorioMedico;
+            this.repositorioAtividade = repositorioAtividade;
         }
 
         public Result<Medico> Adicionar(Medico medico)

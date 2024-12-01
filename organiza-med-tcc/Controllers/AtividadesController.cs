@@ -96,6 +96,17 @@ public IActionResult Adicionar(InserirAtividadesViewModel inserirVm)
         return View(inserirVm);
     }
 
+    var resultadoRk = servico.Adicionar(atividade);
+
+    if (resultadoRk.IsSuccess)
+    {
+        // Atualiza o ranking após adicionar uma nova atividade
+        servicoMedicos.AtualizarRanking();
+
+        ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
+        return RedirectToAction(nameof ( Listar ));
+    }
+
     ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
     return RedirectToAction(nameof(Listar));
 }

@@ -17,6 +17,14 @@ namespace OrganizaMed.Infra.Medicos
         {
         }
 
+        public List<Medico> ObterTodos()
+        {
+            // Certifique-se de incluir as atividades ao carregar os médicos
+            return dbContext.Medicos
+                .Include(m => m.Atividades)
+                .ToList();
+        }
+
         protected override DbSet<Medico> ObterRegistros()
         {
             return dbContext.Medicos;

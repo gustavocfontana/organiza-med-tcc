@@ -6,23 +6,23 @@
 
 <div class="col">
     <h2>Médicos que mais horas trabalharam</h2>
-    <table class="table top-medicos-table">
+    <table class="table table-hover table-striped">
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nome</th>
-                <th>Horas Trabalhadas</th>
-            </tr>
+        <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Horas Trabalhadas</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var medico in Model)
-            {
-                <tr>
-                    <td>@medico.Id</td>
-                    <td>@medico.Nome</td>
-                    <td>@medico.HorasTrabalhadas</td>
-                </tr>
-            }
+        @foreach (var (medico, index) in Model.Select((m, i) => ( m, i + 1 )))
+        {
+            <tr class="@(index <= 3 ? "table-success" : "")">
+                <td>@index</td>
+                <td>@medico.Nome</td>
+                <td>@medico.HorasTrabalhadas.ToString("N1") horas</td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>

@@ -5,12 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentResults;
 using OrganizaMed.Dominio.Atividades;
+using OrganizaMed.Dominio.Medicos;
 
 namespace OrganizaMed.Aplicacao.Servicos
 {
     public class AtividadesServico
     {
         private readonly IRepositorioAtividades repositorioAtividade;
+        private readonly IRepositorioMedicos repositorioMedico;
 
         public AtividadesServico(IRepositorioAtividades repositorioAtividade)
         {
@@ -27,7 +29,17 @@ namespace OrganizaMed.Aplicacao.Servicos
             if (atividadeExistente != null)
                 return Result.Fail<Atividade>("Atividade já cadastrada.");
 
+            // Adiciona a atividade
             repositorioAtividade.Adicionar(atividade);
+
+            // Atualiza as horas trabalhadas para cada médico envolvido
+            foreach (var medico in atividade.MedicosEnvolvidos)
+            {
+                medico.CalcularHorasTrabalhadas();
+                // Atualiza o médico no repositório
+                repositorioMedico.Atualizar(medico);
+            }
+
             return Result.Ok(atividade);
         }
 
