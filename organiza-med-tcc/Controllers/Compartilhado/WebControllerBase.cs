@@ -22,30 +22,26 @@ namespace organiza_med_tcc.Controllers.Compartilhado
         protected void ApresentarMensagemDeErro(Result resultado)
         {
             if (resultado.Errors != null && resultado.Errors.Count > 0)
-            {
                 ViewBag.Mensagem = new MensagemViewModel
                 {
                     Titulo = "Erro",
                     Mensagem = resultado.Errors[0].Message
                 };
-            }
             else
-            {
                 ViewBag.Mensagem = new MensagemViewModel
                 {
                     Titulo = "Erro",
                     Mensagem = "Erro desconhecido."
                 };
-            }
         }
 
         protected void ApresentarMensagemDeSucesso(string mensagem)
         {
             TempData.SerializarMensagemViewModel(new MensagemViewModel
-            {
-                Titulo = "Sucesso",
-                Mensagem = mensagem
-            }
+                {
+                    Titulo = "Sucesso",
+                    Mensagem = mensagem
+                }
             );
         }
     }

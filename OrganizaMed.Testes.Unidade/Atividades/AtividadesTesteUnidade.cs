@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OrganizaMed.Dominio.Atividades;
+﻿using OrganizaMed.Dominio.Atividades;
 
 namespace OrganizaMed.Testes.Unidade.Atividades
 {
@@ -12,8 +9,8 @@ namespace OrganizaMed.Testes.Unidade.Atividades
         [TestMethod]
         public void DataInicioMaiorQueDataFim()
         {
-            var atividade = new Atividade(1, DateTime.Now.AddHours(1), DateTime.Now, new List<Medico>(), TipoAtividade.Consulta);
-            var erros = atividade.Validar();
+            Atividade ? atividade = new Atividade(1, DateTime.Now.AddHours(1), DateTime.Now, new List<Medico>(), TipoAtividade.Consulta);
+            List<string> ? erros = atividade.Validar();
 
             Assert.IsTrue(erros.Contains("Data de início maior que data de fim"));
         }
@@ -21,8 +18,8 @@ namespace OrganizaMed.Testes.Unidade.Atividades
         [TestMethod]
         public void DeveObterTempoRecuperacaoParaCirurgia()
         {
-            var atividade = new Atividade(1, DateTime.Now, DateTime.Now.AddHours(1), new List<Medico>(), TipoAtividade.Cirurgia);
-            var tempoRecuperacao = atividade.ObterTempoRecuperacao();
+            Atividade ? atividade = new Atividade(1, DateTime.Now, DateTime.Now.AddHours(1), new List<Medico>(), TipoAtividade.Cirurgia);
+            TimeSpan tempoRecuperacao = atividade.ObterTempoRecuperacao();
 
             Assert.AreEqual(TimeSpan.FromHours(4), tempoRecuperacao);
         }
@@ -30,8 +27,8 @@ namespace OrganizaMed.Testes.Unidade.Atividades
         [TestMethod]
         public void DeveObterTempoRecuperacaoParaConsulta()
         {
-            var atividade = new Atividade(1, DateTime.Now, DateTime.Now.AddHours(1), new List<Medico>(), TipoAtividade.Consulta);
-            var tempoRecuperacao = atividade.ObterTempoRecuperacao();
+            Atividade ? atividade = new Atividade(1, DateTime.Now, DateTime.Now.AddHours(1), new List<Medico>(), TipoAtividade.Consulta);
+            TimeSpan tempoRecuperacao = atividade.ObterTempoRecuperacao();
 
             Assert.AreEqual(TimeSpan.FromMinutes(10), tempoRecuperacao);
         }

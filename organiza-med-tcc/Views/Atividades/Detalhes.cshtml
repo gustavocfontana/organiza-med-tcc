@@ -9,7 +9,7 @@
 
     <h3>Médicos Envolvidos:</h3>
     <ul>
-        @foreach (var medico in Model.MedicosEnvolvidos)
+        @foreach (Medico ? medico in Model.MedicosEnvolvidos)
         {
             <li>@medico.Nome (@medico.Especialidade)</li>
         }

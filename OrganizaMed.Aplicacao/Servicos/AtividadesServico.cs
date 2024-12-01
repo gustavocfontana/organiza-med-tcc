@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentResults;
+﻿using FluentResults;
 using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Dominio.Medicos;
 
@@ -11,17 +6,18 @@ namespace OrganizaMed.Aplicacao.Servicos
 {
     public class AtividadesServico
     {
-        private readonly IRepositorioAtividades repositorioAtividade;
-        private readonly IRepositorioMedicos repositorioMedico;
+        readonly private IRepositorioAtividades repositorioAtividade;
+        readonly private IRepositorioMedicos repositorioMedico;
 
-        public AtividadesServico(IRepositorioAtividades repositorioAtividade)
+        public AtividadesServico(IRepositorioAtividades repositorioAtividade, IRepositorioMedicos repositorioMedico)
         {
             this.repositorioAtividade = repositorioAtividade;
+            this.repositorioMedico = repositorioMedico;
         }
 
         public Result<Atividade> Adicionar(Atividade atividade)
         {
-            var atividadeExistente = repositorioAtividade.ObterTodos().FirstOrDefault(a =>
+            Atividade ? atividadeExistente = repositorioAtividade.ObterTodos().FirstOrDefault(a =>
                 a.DataInicio == atividade.DataInicio &&
                 a.DataFim == atividade.DataFim &&
                 a.TipoAtividade == atividade.TipoAtividade);
@@ -29,15 +25,27 @@ namespace OrganizaMed.Aplicacao.Servicos
             if (atividadeExistente != null)
                 return Result.Fail<Atividade>("Atividade já cadastrada.");
 
+            // Registra os médicos primeiro se ainda não existirem
+            foreach (Medico medico in atividade.MedicosEnvolvidos)
+            {
+                Medico medicoExistente = repositorioMedico.ObterPorId(medico.Id);
+                if (medicoExistente == null)
+                    repositorioMedico.Adicionar(medico);
+            }
+
             // Adiciona a atividade
             repositorioAtividade.Adicionar(atividade);
 
             // Atualiza as horas trabalhadas para cada médico envolvido
-            foreach (var medico in atividade.MedicosEnvolvidos)
+            foreach (Medico medico in atividade.MedicosEnvolvidos)
             {
-                medico.CalcularHorasTrabalhadas();
-                // Atualiza o médico no repositório
-                repositorioMedico.Atualizar(medico);
+                Medico medicoAtual = repositorioMedico.ObterPorId(medico.Id);
+                if (medicoAtual != null)
+                {
+                    medicoAtual.AdicionarAtividade(atividade);
+                    medicoAtual.CalcularHorasTrabalhadas();
+                    repositorioMedico.Atualizar(medicoAtual);
+                }
             }
 
             return Result.Ok(atividade);
@@ -45,14 +53,14 @@ namespace OrganizaMed.Aplicacao.Servicos
 
         public Result<Atividade> Atualizar(Atividade atividadeAtualizada)
         {
-            var atividade = repositorioAtividade.ObterPorId
-                (atividadeAtualizada.Id);
+            Atividade atividade = repositorioAtividade.ObterPorId(atividadeAtualizada.Id);
 
             if (atividade == null)
                 return Result.Fail<Atividade>("Atividade não encontrada");
 
             atividade.DataInicio = atividadeAtualizada.DataInicio;
             atividade.DataFim = atividadeAtualizada.DataFim;
+            atividade.MedicosEnvolvidos = atividadeAtualizada.MedicosEnvolvidos;
 
             repositorioAtividade.Atualizar(atividade);
 
@@ -61,7 +69,7 @@ namespace OrganizaMed.Aplicacao.Servicos
 
         public Result<Atividade> Remover(int atividadeId)
         {
-            var atividade = repositorioAtividade.ObterPorId(atividadeId);
+            Atividade atividade = repositorioAtividade.ObterPorId(atividadeId);
 
             if (atividade == null)
                 return Result.Fail<Atividade>("Atividade não encontrada");
@@ -73,7 +81,7 @@ namespace OrganizaMed.Aplicacao.Servicos
 
         public Result<Atividade> ObterPorId(int atividadeId)
         {
-            var atividade = repositorioAtividade.ObterPorId(atividadeId);
+            Atividade atividade = repositorioAtividade.ObterPorId(atividadeId);
 
             if (atividade == null)
                 return Result.Fail<Atividade>("Atividade não encontrada");
@@ -85,8 +93,7 @@ namespace OrganizaMed.Aplicacao.Servicos
 
         public Result<List<Atividade>> ObterTodos()
         {
-            var atividades = repositorioAtividade.ObterTodos();
-
+            List<Atividade> atividades = repositorioAtividade.ObterTodos();
             return Result.Ok(atividades);
         }
     }

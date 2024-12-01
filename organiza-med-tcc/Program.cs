@@ -12,7 +12,7 @@ namespace organiza_med_tcc
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder ? builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<OrganizaMedDbContext>();
 
@@ -29,12 +29,10 @@ namespace organiza_med_tcc
 
             builder.Services.AddControllersWithViews();
 
-            var app = builder.Build();
+            WebApplication ? app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
-            {
                 app.UseHsts();
-            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -44,8 +42,8 @@ namespace organiza_med_tcc
             app.UseAuthorization();
 
             app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                "default",
+                "{controller=Home}/{action=Index}/{id?}");
 
 //            using (var scope = app.Services.CreateScope())
 //{
@@ -97,7 +95,7 @@ namespace organiza_med_tcc
 //    }
 //}
 
-app.Run();
+            app.Run();
         }
     }
 }

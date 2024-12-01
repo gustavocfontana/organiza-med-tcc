@@ -1,12 +1,7 @@
-﻿using OrganizaMed.Infra.Compartilhado;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FizzWare.NBuilder;
+﻿using FizzWare.NBuilder;
+using OrganizaMed.Aplicacao.Servicos;
 using OrganizaMed.Dominio.Atividades;
-using OrganizaMed.Dominio.Medicos;
+using OrganizaMed.Infra.Compartilhado;
 using OrganizaMed.Infra.Medicos;
 
 namespace OrganizaMed.Testes.Integracao.Medicos
@@ -35,12 +30,12 @@ namespace OrganizaMed.Testes.Integracao.Medicos
         [TestMethod]
         public void DeveInserirMedico()
         {
-            var medico = Builder<Medico>
+            Medico ? medico = Builder<Medico>
                 .CreateNew()
                 .With(m => m.Id = 0) // Garantir que o Id não seja configurado explicitamente
                 .Persist();
 
-            var medicoSelecionado = repositorio.ObterPorId(medico.Id);
+            Medico ? medicoSelecionado = repositorio.ObterPorId(medico.Id);
 
             Assert.IsNotNull(medicoSelecionado);
             Assert.AreEqual(medico.Nome, medicoSelecionado.Nome);
@@ -49,7 +44,7 @@ namespace OrganizaMed.Testes.Integracao.Medicos
         [TestMethod]
         public void DeveAtualizarMedico()
         {
-            var medico = Builder<Medico>
+            Medico ? medico = Builder<Medico>
                 .CreateNew()
                 .With(m => m.Id = 0) // Garantir que o Id não seja configurado explicitamente
                 .Persist();
@@ -57,7 +52,7 @@ namespace OrganizaMed.Testes.Integracao.Medicos
             medico.Nome = "Teste de Edição";
             repositorio.Atualizar(medico);
 
-            var medicoSelecionado = repositorio.ObterPorId(medico.Id);
+            Medico ? medicoSelecionado = repositorio.ObterPorId(medico.Id);
 
             Assert.IsNotNull(medicoSelecionado);
             Assert.AreEqual(medico.Nome, medicoSelecionado.Nome);
@@ -66,16 +61,16 @@ namespace OrganizaMed.Testes.Integracao.Medicos
         [TestMethod]
         public void DeveExcluirMedico()
         {
-            var medico = Builder<Medico>
+            Medico ? medico = Builder<Medico>
                 .CreateNew()
                 .With(m => m.Id = 0) // Garantir que o Id não seja configurado explicitamente
                 .Persist();
 
             repositorio.Remover(medico);
 
-            var medicoSelecionado = repositorio.ObterPorId(medico.Id);
+            Medico ? medicoSelecionado = repositorio.ObterPorId(medico.Id);
 
-            var medicos = repositorio.ObterTodos();
+            List<Medico> ? medicos = repositorio.ObterTodos();
 
             Assert.IsNull(medicoSelecionado);
             Assert.AreEqual(0, medicos.Count);
@@ -84,53 +79,78 @@ namespace OrganizaMed.Testes.Integracao.Medicos
         [TestMethod]
         public void DeveAtualizarERetornarRanking()
         {
-            // Criar médicos
-            var medico1 = new Medico("João Silva", "12345678", "Cardiologia");
-            var medico2 = new Medico("Maria Souza", "87654321", "Pediatria");
-            var medico3 = new Medico("Carlos Oliveira", "11223344", "Dermatologia");
+            // Arrange
+            DateTime baseTime = DateTime.Now;
 
-            // Adicionar atividades
-            var atividade1 = new Atividade(0, DateTime.Now.AddHours(-6), DateTime.Now.AddHours(-4), new List<Medico> { medico1 }, TipoAtividade.Consulta);
-            var atividade2 = new Atividade(0, DateTime.Now.AddHours(-5), DateTime.Now.AddHours(-3), new List<Medico> { medico2 }, TipoAtividade.Cirurgia);
-            var atividade3 = new Atividade(0, DateTime.Now.AddHours(-8), DateTime.Now.AddHours(-6), new List<Medico> { medico3 }, TipoAtividade.Consulta);
+            Medico medico1 = new Medico("João Silva", "12345-SP", "Cardiologia");
+            Medico medico2 = new Medico("Maria Santos", "67890-SP", "Cirurgia Geral");
+            Medico medico3 = new Medico("Carlos Oliveira", "11111-SP", "Dermatologia");
+
+
+            Atividade atividade1 = new Atividade(
+                0,
+                baseTime.AddHours(-4),
+                baseTime.AddHours(-2),
+                new List<Medico> { medico1 },
+                TipoAtividade.Consulta
+            );
+
+            Atividade atividade2 = new Atividade(
+                0,
+                baseTime.AddHours(-6),
+                baseTime.AddHours(-3),
+                new List<Medico> { medico2 },
+                TipoAtividade.Cirurgia
+            );
+
+            Atividade atividade3 = new Atividade(
+                0,
+                baseTime.AddHours(-2),
+                baseTime.AddHours(-1),
+                new List<Medico> { medico3 },
+                TipoAtividade.Consulta
+            );
 
             medico1.AdicionarAtividade(atividade1);
             medico2.AdicionarAtividade(atividade2);
             medico3.AdicionarAtividade(atividade3);
 
-            // Persistir médicos
             repositorio.Adicionar(medico1);
             repositorio.Adicionar(medico2);
             repositorio.Adicionar(medico3);
 
-            // Listar médicos
+            // Act
             var medicos = repositorio.ObterTodos().ToList();
+            MedicosServico servicoMedicos = new MedicosServico(repositorio);
+            servicoMedicos.AtualizarRanking();
 
-            // Atualizar ranking
-            medico1.AtualizarRanking(medicos);
+            // Assert
+            Assert.AreEqual(1, medicos.First(m => m.Nome.Contains("Maria")).Ranking);
 
-            // Verificar rankings
-            var medicoCarlos = medicos.First(m => m.Crm == "11223344");
-            var medicoJoao = medicos.First(m => m.Crm == "12345678");
-            var medicoMaria = medicos.First(m => m.Crm == "87654321");
+            Assert.AreEqual(2, medicos.First(m => m.Nome.Contains("João")).Ranking);
 
-            Assert.AreEqual(3, medicoCarlos.Ranking); // Carlos Oliveira
-            Assert.AreEqual(1, medicoJoao.Ranking); // João Silva
-            Assert.AreEqual(2, medicoMaria.Ranking); // Maria Souza
+            Assert.AreEqual(3, medicos.First(m => m.Nome.Contains("Carlos")).Ranking);
+
+            Medico maria = medicos.First(m => m.Nome.Contains("Maria"));
+            Medico joao = medicos.First(m => m.Nome.Contains("João"));
+            Medico carlos = medicos.First(m => m.Nome.Contains("Carlos"));
+
+            Assert.IsTrue(maria.HorasTrabalhadas > joao.HorasTrabalhadas);
+            Assert.IsTrue(joao.HorasTrabalhadas > carlos.HorasTrabalhadas);
         }
 
         [TestMethod]
         public void DeveObterAtividadesPorMedico()
         {
-            var medico1 = new Medico("João Silva", "12345678", "Cardiologia");
-            var atividade1 = new Atividade(0, DateTime.Now.AddHours(-6), DateTime.Now.AddHours(-4), new List<Medico> { medico1 }, TipoAtividade.Consulta);
-            var atividade2 = new Atividade(0, DateTime.Now.AddHours(-5), DateTime.Now.AddHours(-3), new List<Medico> { medico1 }, TipoAtividade.Cirurgia);
+            Medico ? medico1 = new Medico("João Silva", "12345678", "Cardiologia");
+            Atividade ? atividade1 = new Atividade(0, DateTime.Now.AddHours(-6), DateTime.Now.AddHours(-4), new List<Medico> { medico1 }, TipoAtividade.Consulta);
+            Atividade ? atividade2 = new Atividade(0, DateTime.Now.AddHours(-5), DateTime.Now.AddHours(-3), new List<Medico> { medico1 }, TipoAtividade.Cirurgia);
 
             dbContext.Medicos.Add(medico1);
             dbContext.Atividades.AddRange(atividade1, atividade2);
             dbContext.SaveChanges();
 
-            var atividades = repositorio.ObterAtividadesPorMedico(medico1.Id);
+            List<Atividade> ? atividades = repositorio.ObterAtividadesPorMedico(medico1.Id);
 
             Assert.AreEqual(2, atividades.Count);
         }
@@ -138,14 +158,14 @@ namespace OrganizaMed.Testes.Integracao.Medicos
         [TestMethod]
         public void DeveObterMedicosEnvolvidos()
         {
-            var medico1 = new Medico("João Silva", "12345678", "Cardiologia");
-            var medico2 = new Medico("Maria Souza", "87654321", "Pediatria");
+            Medico ? medico1 = new Medico("João Silva", "12345678", "Cardiologia");
+            Medico ? medico2 = new Medico("Maria Souza", "87654321", "Pediatria");
 
-            var atividade = new Atividade(0, DateTime.Now.AddHours(-6), DateTime.Now.AddHours(-4), new List<Medico> { medico1, medico2 }, TipoAtividade.Consulta);
+            Atividade ? atividade = new Atividade(0, DateTime.Now.AddHours(-6), DateTime.Now.AddHours(-4), new List<Medico> { medico1, medico2 }, TipoAtividade.Consulta);
             dbContext.Atividades.Add(atividade);
             dbContext.SaveChanges();
 
-            var medicosEnvolvidos = repositorio.ObterMedicosEnvolvidos(atividade.Id);
+            List<Medico> ? medicosEnvolvidos = repositorio.ObterMedicosEnvolvidos(atividade.Id);
 
             Assert.AreEqual(2, medicosEnvolvidos.Count);
             Assert.IsTrue(medicosEnvolvidos.Any(m => m.Id == medico1.Id));
@@ -155,13 +175,13 @@ namespace OrganizaMed.Testes.Integracao.Medicos
         [TestMethod]
         public void DeveObterTodosMedicos()
         {
-            var medico1 = new Medico("João Silva", "12345678", "Cardiologia");
-            var medico2 = new Medico("Maria Souza", "87654321", "Pediatria");
+            Medico ? medico1 = new Medico("João Silva", "12345678", "Cardiologia");
+            Medico ? medico2 = new Medico("Maria Souza", "87654321", "Pediatria");
 
             repositorio.Adicionar(medico1);
             repositorio.Adicionar(medico2);
 
-            var medicos = repositorio.ObterTodos();
+            List<Medico> ? medicos = repositorio.ObterTodos();
 
             Assert.AreEqual(2, medicos.Count);
         }

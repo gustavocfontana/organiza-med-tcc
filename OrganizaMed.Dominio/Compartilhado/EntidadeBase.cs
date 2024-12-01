@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OrganizaMed.Dominio.Compartilhado;
-
-public abstract class EntidadeBase
+﻿namespace OrganizaMed.Dominio.Compartilhado
 {
-    public int Id { get; set; }
+    public abstract class EntidadeBase
+    {
+        public int Id { get; set; }
 
-    public abstract List<string> Validar();
+        public abstract List<string> Validar();
+    }
 }

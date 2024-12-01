@@ -1,32 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Infra.Compartilhado;
 
 namespace OrganizaMed.Infra.Atividades
 {
-    public class RepositorioAtividades : RepositorioBase<Atividade>, IRepositorioAtividades
+    public class RepositorioAtividades : IRepositorioAtividades
     {
-        public RepositorioAtividades(OrganizaMedDbContext dbContext) : base(dbContext)
+        readonly private OrganizaMedDbContext dbContext;
+
+        public RepositorioAtividades(OrganizaMedDbContext dbContext)
         {
+            this.dbContext = dbContext;
         }
 
-        protected override DbSet<Atividade> ObterRegistros()
+        public void Adicionar(Atividade atividade)
         {
-            return dbContext.Atividades;
+            dbContext.Atividades.Add(atividade);
+            dbContext.SaveChanges();
+        }
+
+        public void Atualizar(Atividade atividade)
+        {
+            dbContext.Atividades.Update(atividade);
+            dbContext.SaveChanges();
+        }
+
+        public Atividade ObterPorId(int id)
+        {
+            return dbContext.Atividades
+                .Include(a => a.MedicosEnvolvidos)
+                .FirstOrDefault(a => a.Id == id);
+        }
+
+        public List<Atividade> ObterTodos()
+        {
+            return dbContext.Atividades
+                .Include(a => a.MedicosEnvolvidos)
+                .ToList();
+        }
+
+        public void Remover(Atividade atividade)
+        {
+            dbContext.Atividades.Remove(atividade);
+            dbContext.SaveChanges();
         }
 
         public List<Medico> ObterMedicosEnvolvidos(int atividadeId)
         {
-            var atividade = dbContext.Atividades
+            Atividade ? atividade = dbContext.Atividades
                 .Include(a => a.MedicosEnvolvidos)
                 .FirstOrDefault(a => a.Id == atividadeId);
 
-            return atividade?.MedicosEnvolvidos;
+            return atividade?.MedicosEnvolvidos ?? new List<Medico>();
         }
 
         public List<Atividade> ObterAtividadesPorMedico(int medicoId)

@@ -4,15 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using organiza_med_tcc.Controllers.Compartilhado;
 using organiza_med_tcc.Models;
 using OrganizaMed.Aplicacao.Servicos;
-using OrganizaMed.Dominio.Atividades;
-using OrganizaMed.Dominio.Medicos;
 
 namespace organiza_med_tcc.Controllers
 {
     public class MedicosController : WebControllerBase
     {
-        private readonly MedicosServico servico;
-        private readonly IMapper mapeador;
+        readonly private IMapper mapeador;
+        readonly private MedicosServico servico;
 
         public MedicosController(MedicosServico servico, IMapper mapeador)
         {
@@ -22,7 +20,7 @@ namespace organiza_med_tcc.Controllers
 
         public IActionResult Listar()
         {
-            var resultado = servico.ObterTodos();
+            Result<List<Medico>> ? resultado = servico.ObterTodos();
 
             if (resultado.IsFailed)
             {
@@ -31,9 +29,9 @@ namespace organiza_med_tcc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var medicos = resultado.Value;
+            List<Medico> ? medicos = resultado.Value;
 
-            var listarMedicosVm =
+            IEnumerable<ListarMedicosViewModel> ? listarMedicosVm =
                 mapeador.Map<IEnumerable<ListarMedicosViewModel>>(medicos);
 
             return View(listarMedicosVm);
@@ -50,9 +48,9 @@ namespace organiza_med_tcc.Controllers
             if (!ModelState.IsValid)
                 return View(inserirVm);
 
-            var medico = mapeador.Map<Medico>(inserirVm);
+            Medico ? medico = mapeador.Map<Medico>(inserirVm);
 
-            var resultado = servico.Adicionar(medico);
+            Result<Medico> ? resultado = servico.Adicionar(medico);
 
             if (resultado.IsFailed)
             {
@@ -68,7 +66,7 @@ namespace organiza_med_tcc.Controllers
 
         public IActionResult Atualizar(int id)
         {
-            var resultado = servico.ObterPorId(id);
+            Result<Medico> ? resultado = servico.ObterPorId(id);
 
             if (resultado.IsFailed)
             {
@@ -77,9 +75,9 @@ namespace organiza_med_tcc.Controllers
                 return RedirectToAction(nameof ( Listar ));
             }
 
-            var medico = resultado.Value;
+            Medico ? medico = resultado.Value;
 
-            var editarVm = mapeador.Map<EditarMedicosViewModel>(medico);
+            EditarMedicosViewModel ? editarVm = mapeador.Map<EditarMedicosViewModel>(medico);
 
             return View(editarVm);
         }
@@ -90,9 +88,9 @@ namespace organiza_med_tcc.Controllers
             if (!ModelState.IsValid)
                 return View(editarVM);
 
-            var medico = mapeador.Map<Medico>(editarVM);
+            Medico ? medico = mapeador.Map<Medico>(editarVM);
 
-            var resultado = servico.Atualizar(medico);
+            Result<Medico> ? resultado = servico.Atualizar(medico);
 
             if (resultado.IsFailed)
             {
@@ -108,7 +106,7 @@ namespace organiza_med_tcc.Controllers
 
         public IActionResult Excluir(int id)
         {
-            var resultado = servico.ObterPorId(id);
+            Result<Medico> ? resultado = servico.ObterPorId(id);
 
             if (resultado.IsFailed)
             {
@@ -117,9 +115,9 @@ namespace organiza_med_tcc.Controllers
                 return RedirectToAction(nameof ( Listar ));
             }
 
-            var medico = resultado.Value;
+            Medico ? medico = resultado.Value;
 
-            var detalhesVm = mapeador.Map<DetalhesMedicosViewModel>(medico);
+            DetalhesMedicosViewModel ? detalhesVm = mapeador.Map<DetalhesMedicosViewModel>(medico);
 
             return View(detalhesVm);
         }
@@ -127,7 +125,7 @@ namespace organiza_med_tcc.Controllers
         [HttpPost]
         public IActionResult Excluir(DetalhesMedicosViewModel detalhesVm)
         {
-            var resultado = servico.Remover(detalhesVm.Id);
+            Result<Medico> ? resultado = servico.Remover(detalhesVm.Id);
 
             if (resultado.IsFailed)
             {
@@ -143,7 +141,7 @@ namespace organiza_med_tcc.Controllers
 
         public IActionResult Detalhes(int id)
         {
-            var resultado = servico.ObterPorId(id);
+            Result<Medico> ? resultado = servico.ObterPorId(id);
 
             if (resultado.IsFailed)
             {
@@ -152,9 +150,9 @@ namespace organiza_med_tcc.Controllers
                 return RedirectToAction(nameof ( Listar ));
             }
 
-            var medico = resultado.Value;
+            Medico ? medico = resultado.Value;
 
-            var detalhesVm = mapeador.Map<DetalhesMedicosViewModel>(medico);
+            DetalhesMedicosViewModel ? detalhesVm = mapeador.Map<DetalhesMedicosViewModel>(medico);
 
             return View(detalhesVm);
         }

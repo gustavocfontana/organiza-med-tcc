@@ -16,7 +16,7 @@ namespace organiza_med_tcc.Extensions
 
         public static MensagemViewModel ? DesserializarMensagemViewModel(this ITempDataDictionary dicionario)
         {
-            var mensagemStr = dicionario["Mensagem"]?.ToString();
+            string ? mensagemStr = dicionario["Mensagem"]?.ToString();
 
             if (mensagemStr is null) return null;
 

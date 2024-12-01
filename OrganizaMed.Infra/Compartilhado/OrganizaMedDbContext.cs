@@ -1,8 +1,6 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OrganizaMed.Dominio.Atividades;
-using OrganizaMed.Dominio.Medicos;
 using OrganizaMed.Infra.Atividades;
 using OrganizaMed.Infra.Medicos;
 
@@ -15,12 +13,12 @@ namespace OrganizaMed.Infra.Compartilhado
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var config = new ConfigurationBuilder()
+            IConfigurationRoot ? config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var connectionString = config.GetConnectionString("SqlServer");
+            string ? connectionString = config.GetConnectionString("SqlServer");
 
             optionsBuilder.UseSqlServer(connectionString);
 

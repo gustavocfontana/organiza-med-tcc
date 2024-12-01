@@ -14,6 +14,7 @@
 }
 
 /* Estilos adicionais para outros elementos */
+
 h1, h2, h3, h4, h5, h6 {
     color: #e0e0e0; /* Cor da fonte no modo noturno */
 }
@@ -24,8 +25,8 @@ a {
 
 button {
     background-color: #333;
-    color: #e0e0e0; /* Cor da fonte dos botões no modo noturno */
     border-color: #444;
+    color: #e0e0e0; /* Cor da fonte dos botões no modo noturno */
 }
 
 .container.dark-mode {
@@ -34,16 +35,16 @@ button {
 }
 
 /* Estilo para a navbar no modo noturno */
+
 .navbar-dark-mode {
     background-color: #1f1f1f;
     color: #e0e0e0; /* Cor da fonte no modo noturno */
 }
 
-.navbar-dark-mode .nav-link {
-    color: #e0e0e0;
-}
+.navbar-dark-mode .nav-link { color: #e0e0e0; }
 
 /* Estilo para o header no modo noturno */
+
 .header-dark-mode {
     background-color: #1f1f1f;
     color: #e0e0e0; /* Cor da fonte no modo noturno */

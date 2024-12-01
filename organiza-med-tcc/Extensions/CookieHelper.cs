@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-
-public static class CookieHelper
+﻿public static class CookieHelper
 {
     public static void SetCookie(HttpContext context, string key, string value, int ? expireTime)
     {
