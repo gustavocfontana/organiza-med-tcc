@@ -6,22 +6,26 @@
     <div class="welcome-section">
         <h1 class="title">Bem vindo ao OrganizaMed!</h1>
         <p class="subtitle">Gerencie e organize o cronograma de atividades médicas em sua clínica.</p>
+        @if (User.Identity is not null && User.Identity.IsAuthenticated)
+        {
+            <div class="actions-grid">
+                <a class="action-card primary" href="/Atividades/Listar">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>Gerenciar Atividades</span>
+                </a>
 
-        <div class="actions-grid">
-            <a class="action-card primary" href="/Atividades/Listar">
-                <i class="bi bi-calendar-check"></i>
-                <span>Gerenciar Atividades</span>
-            </a>
+                <a class="action-card secondary" href="/Medicos/Listar">
+                    <i class="bi bi-people"></i>
+                    <span>Gerenciar Médicos</span>
+                </a>
 
-            <a class="action-card secondary" href="/Medicos/Listar">
-                <i class="bi bi-people"></i>
-                <span>Gerenciar Médicos</span>
-            </a>
+                <a class="action-card success" href="/Medicos/TopMedicos">
+                    <i class="bi bi-trophy"></i>
+                    <span>Ranking</span>
+                </a>
 
-            <a class="action-card success" href="/Medicos/TopMedicos">
-                <i class="bi bi-trophy"></i>
-                <span>Ranking</span>
-            </a>
-        </div>
+            </div>
+        }
     </div>
+    
 </div>

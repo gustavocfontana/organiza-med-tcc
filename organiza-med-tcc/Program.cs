@@ -1,6 +1,9 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using OrganizaMed.Aplicacao.Servicos;
 using OrganizaMed.Dominio.Atividades;
+using OrganizaMed.Dominio.Autenticacao;
 using OrganizaMed.Dominio.Medicos;
 using OrganizaMed.Infra.Atividades;
 using OrganizaMed.Infra.Compartilhado;
@@ -26,6 +29,37 @@ namespace organiza_med_tcc
             {
                 cfg.AddMaps(Assembly.GetExecutingAssembly());
             });
+
+            builder.Services.AddScoped<AutenticacaoServico>();
+            builder.Services.AddIdentity<Usuario, Perfil>()
+                .AddEntityFrameworkStores<OrganizaMedDbContext>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+            });
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                    {
+                        options.Cookie.Name = "AspNetCore.Cookies";
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+                        options.SlidingExpiration = true;
+                    }
+                );
+
+            builder.Services.ConfigureApplicationCookie(options =>
+                {
+                    options.LoginPath = "/Autenticacao/Login";
+                    options.AccessDeniedPath = "/Autenticacao/AcessoNegado";
+                }
+            );
 
             builder.Services.AddControllersWithViews();
 

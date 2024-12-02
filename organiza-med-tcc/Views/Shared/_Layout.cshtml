@@ -39,7 +39,8 @@
                                 <i class="bi bi-house-door"></i> Início
                             </a>
                         </li>
-
+                        @if (User.Identity is not null && User.Identity.IsAuthenticated) 
+                        {
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Medicos" asp-action="Listar">
                                 <i class="bi bi-people"></i> Médicos
@@ -57,6 +58,27 @@
                                 <i class="bi bi-trophy"></i> Ranking
                             </a>
                         </li>
+
+
+                        <form asp-controller="Autenticacao" asp-action="Logout" class="d-flex gap-1 ms-4">
+                            <a href="#" class="btn btn-outline-primary px-5">
+                                <i class="bi bi-person-vcard-fill"></i>
+                                @User.Identity.Name
+                            </a>
+
+                            <button class="btn btn-primary px-3">
+                                <i class="bi bi-box-arrow-right"></i>
+                                Logout
+                            </button>
+                        </form>
+                        }
+                        else
+                        {
+                            <div class="col-md-3 text-end">
+                                <a asp-controller="Autenticacao" asp-action="Login" class="btn btn-outline-primary me-2 px-4">Login</a>
+                                <a asp-controller="Autenticacao" asp-action="Registrar" class="btn btn-outline-primary px-4">Registro</a>
+                            </div>
+                        }
                     </ul>
 
                     <button id="theme-toggle" class="theme-toggle-btn">
