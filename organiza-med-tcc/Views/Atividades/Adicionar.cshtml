@@ -164,7 +164,7 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="MedicoId" class="control-label">Médico Responsável</label>
+            <label asp-for="MedicoId" class="control-label">Médico Responsável (Segurar CTRL para selecionar múltiplos)</label>
             <select asp-for="MedicoId" class="form-control">
                 @foreach (var medico in Model.Medicos)
                 {
