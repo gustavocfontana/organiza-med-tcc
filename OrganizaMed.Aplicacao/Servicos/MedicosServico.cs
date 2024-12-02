@@ -1,4 +1,9 @@
-﻿using FluentResults;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using FluentResults;
 using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Dominio.Medicos;
 
@@ -6,18 +11,18 @@ namespace OrganizaMed.Aplicacao.Servicos
 {
     public class MedicosServico
     {
-        readonly private IRepositorioAtividades repositorioAtividade;
-        readonly private IRepositorioMedicos repositorioMedico;
+        private readonly IRepositorioMedicos repositorioMedico;
+        private readonly IRepositorioAtividades repositorioAtividade;
 
         public MedicosServico(IRepositorioMedicos repositorioMedico)
         {
             this.repositorioMedico = repositorioMedico;
-            repositorioAtividade = repositorioAtividade;
+            this.repositorioAtividade = repositorioAtividade;
         }
 
         public Result<Medico> Adicionar(Medico medico)
         {
-            Medico ? medicoExistente = repositorioMedico.ObterTodos().FirstOrDefault(m => m.Crm == medico.Crm);
+            var medicoExistente = repositorioMedico.ObterTodos().FirstOrDefault(m => m.Crm == medico.Crm);
             if (medicoExistente != null)
                 return Result.Fail<Medico>("Médico já cadastrado.");
 
@@ -27,7 +32,7 @@ namespace OrganizaMed.Aplicacao.Servicos
 
         public Result<Medico> Atualizar(Medico medicoAtualizado)
         {
-            Medico medico = repositorioMedico.ObterPorId
+            var medico = repositorioMedico.ObterPorId
                 (medicoAtualizado.Id);
 
             if (medico == null)
@@ -43,7 +48,7 @@ namespace OrganizaMed.Aplicacao.Servicos
 
         public Result<Medico> Remover(int medicoId)
         {
-            Medico medico = repositorioMedico.ObterPorId(medicoId);
+            var medico = repositorioMedico.ObterPorId(medicoId);
 
             if (medico == null)
                 return Result.Fail<Medico>("Médico não encontrado");
@@ -55,7 +60,7 @@ namespace OrganizaMed.Aplicacao.Servicos
 
         public Result<Medico> ObterPorId(int medicoId)
         {
-            Medico medico = repositorioMedico.ObterPorId(medicoId);
+            var medico = repositorioMedico.ObterPorId(medicoId);
 
             if (medico == null)
                 return Result.Fail<Medico>("Médico não encontrado");
@@ -65,7 +70,7 @@ namespace OrganizaMed.Aplicacao.Servicos
 
         public Result<List<Medico>> ObterTodos()
         {
-            List<Medico> medicos = repositorioMedico.ObterTodos();
+            var medicos = repositorioMedico.ObterTodos();
 
             return Result.Ok(medicos);
         }
@@ -74,12 +79,14 @@ namespace OrganizaMed.Aplicacao.Servicos
         {
             var medicosIndisponiveis = new List<string>();
 
-            foreach (int medicoId in medicoIds)
+            foreach (var medicoId in medicoIds)
             {
-                Medico medico = ObterPorId(medicoId).Value;
+                var medico = ObterPorId(medicoId).Value;
                 if (medico.Atividades.Any(a => a.DataInicio < dataFim && a.DataFim > dataInicio))
                     if (medico != null && !medico.EstaDisponivel(dataInicio, dataFim))
+                    {
                         medicosIndisponiveis.Add(medico.Nome);
+                    }
             }
 
             return medicosIndisponiveis;
@@ -87,10 +94,12 @@ namespace OrganizaMed.Aplicacao.Servicos
 
         public void AtualizarRanking()
         {
-            List<Medico> medicos = repositorioMedico.ObterTodos();
+            var medicos = repositorioMedico.ObterTodos();
 
-            foreach (Medico medico in medicos)
+            foreach (var medico in medicos)
+            {
                 medico.CalcularHorasTrabalhadas();
+            }
 
             var medicosOrdenados = medicos.OrderByDescending(m => m.HorasTrabalhadas).ToList();
 

@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using FluentResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using organiza_med_tcc.Controllers.Compartilhado;
 using organiza_med_tcc.Models;
@@ -12,9 +10,9 @@ namespace organiza_med_tcc.Controllers
 {
     public class AtividadesController : WebControllerBase
     {
-        readonly private IMapper mapeador;
-        readonly private AtividadesServico servico;
-        readonly private MedicosServico servicoMedicos;
+        private readonly AtividadesServico servico;
+        private readonly MedicosServico servicoMedicos;
+        private readonly IMapper mapeador;
 
         public AtividadesController(AtividadesServico servico, MedicosServico servicoMedicos, IMapper mapeador)
         {
@@ -25,7 +23,7 @@ namespace organiza_med_tcc.Controllers
 
         public IActionResult Listar()
         {
-            Result<List<Atividade>> resultado = servico.ObterTodos();
+            var resultado = servico.ObterTodos();
             if (resultado.IsFailed)
             {
                 ApresentarMensagemDeErro(resultado.ToResult());
@@ -33,9 +31,9 @@ namespace organiza_med_tcc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            List<Atividade> ? atividades = resultado.Value;
+            var atividades = resultado.Value;
 
-            IEnumerable<ListarAtividadesViewModel> ? listarAtividadesVm =
+            var listarAtividadesVm =
                 mapeador.Map<IEnumerable<ListarAtividadesViewModel>>(atividades);
 
             return View(listarAtividadesVm);
@@ -43,7 +41,7 @@ namespace organiza_med_tcc.Controllers
 
         public IActionResult Adicionar()
         {
-            InserirAtividadesViewModel model = new InserirAtividadesViewModel
+            var model = new InserirAtividadesViewModel
             {
                 Medicos = servicoMedicos.ObterTodos().Value
             };
@@ -51,69 +49,71 @@ namespace organiza_med_tcc.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        public IActionResult Adicionar(InserirAtividadesViewModel inserirVm)
+       [HttpPost]
+public IActionResult Adicionar(InserirAtividadesViewModel inserirVm)
+{
+    Console.WriteLine("Método Adicionar foi chamado.");
+    Console.WriteLine($"DataInicio: {inserirVm.DataInicio}");
+    Console.WriteLine($"DataFim: {inserirVm.DataFim}");
+
+    if (!ModelState.IsValid)
+    {
+        Console.WriteLine("ModelState não é válido.");
+        foreach (var modelState in ModelState.Values)
         {
-            Console.WriteLine("Método Adicionar foi chamado.");
-            Console.WriteLine($"DataInicio: {inserirVm.DataInicio}");
-            Console.WriteLine($"DataFim: {inserirVm.DataFim}");
-
-            if (!ModelState.IsValid)
+            foreach (var error in modelState.Errors)
             {
-                Console.WriteLine("ModelState não é válido.");
-                foreach (ModelStateEntry modelState in ModelState.Values)
-                {
-                    foreach (ModelError error in modelState.Errors)
-                        Console.WriteLine($"Erro de validação: {error.ErrorMessage}");
-                }
-
-                inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
-                return View(inserirVm);
+                Console.WriteLine($"Erro de validação: {error.ErrorMessage}");
             }
-
-            IEnumerable<string> medicosIndisponiveis = servicoMedicos.VerificarDisponibilidade(inserirVm.MedicoId, inserirVm.DataInicio, inserirVm.DataFim);
-            Console.WriteLine($"Médicos indisponíveis: {string.Join(", ", medicosIndisponiveis)}");
-
-            if (medicosIndisponiveis.Any())
-            {
-                Console.WriteLine("Existem médicos indisponíveis.");
-                ModelState.AddModelError("", "Os seguintes médicos não estão disponíveis no período selecionado: " + string.Join(", ", medicosIndisponiveis));
-                inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
-                return View(inserirVm);
-            }
-
-            Atividade ? atividade = mapeador.Map<Atividade>(inserirVm);
-            Console.WriteLine($"Dados da atividade mapeada: {JsonConvert.SerializeObject(atividade)}");
-
-            Result<Atividade> resultado = servico.Adicionar(atividade);
-            Console.WriteLine($"Resultado da adição da atividade: {resultado.IsSuccess}");
-
-            if (resultado.IsFailed)
-            {
-                Console.WriteLine("Falha ao adicionar atividade.");
-                ApresentarMensagemDeErro(resultado.ToResult());
-                inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
-                return View(inserirVm);
-            }
-
-            Result<Atividade> resultadoRk = servico.Adicionar(atividade);
-
-            if (resultadoRk.IsSuccess)
-            {
-                // Atualiza o ranking após adicionar uma nova atividade
-                servicoMedicos.AtualizarRanking();
-
-                ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
-                return RedirectToAction(nameof ( Listar ));
-            }
-
-            ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
-            return RedirectToAction(nameof ( Listar ));
         }
+
+        inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
+        return View(inserirVm);
+    }
+
+    var medicosIndisponiveis = servicoMedicos.VerificarDisponibilidade(inserirVm.MedicoId, inserirVm.DataInicio, inserirVm.DataFim);
+    Console.WriteLine($"Médicos indisponíveis: {string.Join(", ", medicosIndisponiveis)}");
+
+    if (medicosIndisponiveis.Any())
+    {
+        Console.WriteLine("Existem médicos indisponíveis.");
+        ModelState.AddModelError("", "Os seguintes médicos não estão disponíveis no período selecionado: " + string.Join(", ", medicosIndisponiveis));
+        inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
+        return View(inserirVm);
+    }
+
+    var atividade = mapeador.Map<Atividade>(inserirVm);
+    Console.WriteLine($"Dados da atividade mapeada: {JsonConvert.SerializeObject(atividade)}");
+
+    var resultado = servico.Adicionar(atividade);
+    Console.WriteLine($"Resultado da adição da atividade: {resultado.IsSuccess}");
+
+    if (resultado.IsFailed)
+    {
+        Console.WriteLine("Falha ao adicionar atividade.");
+        ApresentarMensagemDeErro(resultado.ToResult());
+        inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
+        return View(inserirVm);
+    }
+
+    var resultadoRk = servico.Adicionar(atividade);
+
+    if (resultadoRk.IsSuccess)
+    {
+        // Atualiza o ranking após adicionar uma nova atividade
+        servicoMedicos.AtualizarRanking();
+
+        ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
+        return RedirectToAction(nameof ( Listar ));
+    }
+
+    ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
+    return RedirectToAction(nameof(Listar));
+}
 
         public IActionResult Atualizar(int id)
         {
-            Result<Atividade> resultado = servico.ObterPorId(id);
+            var resultado = servico.ObterPorId(id);
 
             if (resultado.IsFailed)
             {
@@ -122,9 +122,9 @@ namespace organiza_med_tcc.Controllers
                 return RedirectToAction(nameof ( Listar ));
             }
 
-            Atividade ? atividade = resultado.Value;
+            var atividade = resultado.Value;
 
-            EditarAtividadesViewModel ? editarVm = mapeador.Map<EditarAtividadesViewModel>(atividade);
+            var editarVm = mapeador.Map<EditarAtividadesViewModel>(atividade);
 
             return View(editarVm);
         }
@@ -138,20 +138,22 @@ namespace organiza_med_tcc.Controllers
             if (!ModelState.IsValid)
             {
                 Console.WriteLine("ModelState não é válido.");
-                foreach (ModelStateEntry modelState in ModelState.Values)
+                foreach (var modelState in ModelState.Values)
                 {
-                    foreach (ModelError error in modelState.Errors)
+                    foreach (var error in modelState.Errors)
+                    {
                         Console.WriteLine($"Erro de validação: {error.ErrorMessage}");
+                    }
                 }
 
                 editarVM.Medicos = servicoMedicos.ObterTodos().Value;
                 return View(editarVM);
             }
 
-            Atividade ? atividade = mapeador.Map<Atividade>(editarVM);
+            var atividade = mapeador.Map<Atividade>(editarVM);
             Console.WriteLine($"Dados da atividade mapeada: {JsonConvert.SerializeObject(atividade)}");
 
-            Result<Atividade> resultado = servico.Atualizar(atividade);
+            var resultado = servico.Atualizar(atividade);
             Console.WriteLine($"Resultado da edicao da atividade: {resultado.IsSuccess}");
 
             if (resultado.IsFailed)
@@ -168,7 +170,7 @@ namespace organiza_med_tcc.Controllers
 
         public IActionResult Excluir(int id)
         {
-            Result<Atividade> resultado = servico.ObterPorId(id);
+            var resultado = servico.ObterPorId(id);
 
             if (resultado.IsFailed)
             {
@@ -177,9 +179,9 @@ namespace organiza_med_tcc.Controllers
                 return RedirectToAction(nameof ( Listar ));
             }
 
-            Atividade ? atividade = resultado.Value;
+            var atividade = resultado.Value;
 
-            DetalhesAtividadesViewModel ? detalhesVm = mapeador.Map<DetalhesAtividadesViewModel>(atividade);
+            var detalhesVm = mapeador.Map<DetalhesAtividadesViewModel>(atividade);
 
             return View(detalhesVm);
         }
@@ -187,7 +189,7 @@ namespace organiza_med_tcc.Controllers
         [HttpPost]
         public IActionResult Excluir(DetalhesAtividadesViewModel detalhesVm)
         {
-            Result<Atividade> resultado = servico.Remover(detalhesVm.Id);
+            var resultado = servico.Remover(detalhesVm.Id);
 
             if (resultado.IsFailed)
             {
@@ -203,7 +205,7 @@ namespace organiza_med_tcc.Controllers
 
         public IActionResult Detalhes(int id)
         {
-            Result<Atividade> resultado = servico.ObterPorId(id);
+            var resultado = servico.ObterPorId(id);
 
             if (resultado.IsFailed)
             {
@@ -212,9 +214,9 @@ namespace organiza_med_tcc.Controllers
                 return RedirectToAction(nameof ( Listar ));
             }
 
-            Atividade ? atividade = resultado.Value;
+            var atividade = resultado.Value;
 
-            DetalhesAtividadesViewModel ? detalhesVm = mapeador.Map<DetalhesAtividadesViewModel>(atividade);
+            var detalhesVm = mapeador.Map<DetalhesAtividadesViewModel>(atividade);
 
             return View(detalhesVm);
         }

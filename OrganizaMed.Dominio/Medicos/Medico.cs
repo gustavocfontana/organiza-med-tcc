@@ -6,19 +6,19 @@ public class Medico : EntidadeBase
 {
     protected Medico() {} // EF
 
+    public string Nome { get; set; }
+    public string Crm { get; set; }
+    public string Especialidade { get; set; }
+    public List<Atividade> Atividades { get; set; } = new List<Atividade>();
+    public double HorasTrabalhadas { get; set; } 
+    public int Ranking { get; set; }
+
     public Medico(string nome, string crm, string especialidade)
     {
         Nome = nome;
         Crm = crm;
         Especialidade = especialidade;
     }
-
-    public string Nome { get; set; }
-    public string Crm { get; set; }
-    public string Especialidade { get; set; }
-    public List<Atividade> Atividades { get; set; } = new List<Atividade>();
-    public double HorasTrabalhadas { get; set; }
-    public int Ranking { get; set; }
 
     public override List<string> Validar()
     {
@@ -29,7 +29,7 @@ public class Medico : EntidadeBase
         if (Crm.Length < 8)
             erros.Add("CRM inválido");
 
-        Regex ? crmRegex = new Regex(@"^\d{5}-[A-Z]{2}$");
+        var crmRegex = new Regex(@"^\d{5}-[A-Z]{2}$");
         if (!crmRegex.IsMatch(Crm))
             erros.Add("CRM inválido. Deve ser no formato 12345-XX");
 
@@ -41,49 +41,29 @@ public class Medico : EntidadeBase
 
     public bool EstaDisponivel(DateTime dataInicio, DateTime dataFim)
     {
-        // Se não tem atividades, está sempre disponível
-        if (Atividades == null || !Atividades.Any())
-            return true;
-
-        // Verifica se há conflito com alguma atividade existente
-        foreach (Atividade atividade in Atividades)
-        {
-            // Calcula o fim real considerando o tempo de recuperação
-            DateTime fimComRecuperacao = atividade.DataFim + atividade.ObterTempoRecuperacao();
-
-            // Verifica se há sobreposição
-            if (dataInicio < fimComRecuperacao && dataFim > atividade.DataInicio)
-                return false;
-        }
-
-        return true;
+        return Atividades.All(a => a.DataFim + a.ObterTempoRecuperacao() <= dataInicio || a.DataInicio >= dataFim);
     }
 
     public void AdicionarAtividade(Atividade atividade)
     {
-        if (atividade == null)
-            throw new ArgumentNullException(nameof ( atividade ));
-
-        // Inicializa a lista se necessário
-        Atividades ??= new List<Atividade>();
-
         if (!EstaDisponivel(atividade.DataInicio, atividade.DataFim))
             throw new Exception("Médico não disponível");
 
-        // Adiciona a nova atividade
         Atividades.Add(atividade);
     }
 
     public void CalcularHorasTrabalhadas()
     {
-        HorasTrabalhadas = Atividades.Sum(a => ( a.DataFim - a.DataInicio ).TotalHours);
+        HorasTrabalhadas = Atividades.Sum(a => (a.DataFim - a.DataInicio).TotalHours);
     }
 
     public void AtualizarRanking(List<Medico> medicos)
     {
         // Calcular horas trabalhadas para todos os médicos
-        foreach (Medico ? medico in medicos)
+        foreach (var medico in medicos)
+        {
             medico.CalcularHorasTrabalhadas();
+        }
 
         // Ordenar médicos por horas trabalhadas em ordem decrescente
         var medicosOrdenados = medicos.OrderByDescending(m => m.HorasTrabalhadas).ToList();
@@ -93,7 +73,9 @@ public class Medico : EntidadeBase
         for ( int i = 0 ; i < medicosOrdenados.Count ; i++ )
         {
             if (i > 0 && medicosOrdenados[i].HorasTrabalhadas < medicosOrdenados[i - 1].HorasTrabalhadas)
+            {
                 ranking = i + 1;
+            }
             medicosOrdenados[i].Ranking = ranking;
         }
     }

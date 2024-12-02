@@ -13,7 +13,7 @@
             <div class="form-group">
                 <label asp-for="TipoAtividade" class="control-label"></label>
                 <select asp-for="TipoAtividade" class="form-control">
-                    @foreach (object ? tipo in Enum.GetValues(typeof(TipoAtividade)))
+                    @foreach (var tipo in Enum.GetValues(typeof(TipoAtividade)))
                     {
                         <option value="@tipo">@tipo</option>
                     }

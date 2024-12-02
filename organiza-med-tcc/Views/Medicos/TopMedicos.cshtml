@@ -15,7 +15,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach (( TopMedicosViewModel ? medico, int index ) in Model.Select((m, i) => ( m, i + 1 )))
+        @foreach (var (medico, index) in Model.Select((m, i) => ( m, i + 1 )))
         {
             <tr class="@(index <= 3 ? "table-success" : "")">
                 <td>@index</td>

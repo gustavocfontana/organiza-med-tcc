@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using FluentResults;
 
 namespace organiza_med_tcc.Models
 {

@@ -1,10 +1,14 @@
-﻿using FizzWare.NBuilder;
-using FluentResults;
-using OrganizaMed.Aplicacao.Servicos;
+﻿using OrganizaMed.Infra.Compartilhado;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using FizzWare.NBuilder;
 using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Infra.Atividades;
-using OrganizaMed.Infra.Compartilhado;
-using OrganizaMed.Infra.Medicos;
+using FluentResults;
+using OrganizaMed.Aplicacao.Servicos;
 
 namespace OrganizaMed.Testes.Integracao.Atividades
 {
@@ -13,8 +17,7 @@ namespace OrganizaMed.Testes.Integracao.Atividades
     public class AtividadesTestesIntegracao
     {
         private OrganizaMedDbContext dbContext;
-        private RepositorioAtividades repositorioAtividades;
-        private RepositorioMedicos repositorioMedicos;
+        private RepositorioAtividades repositorio;
         private AtividadesServico servico;
 
         [TestInitialize]
@@ -25,14 +28,16 @@ namespace OrganizaMed.Testes.Integracao.Atividades
             dbContext.Atividades.RemoveRange(dbContext.Atividades);
             dbContext.SaveChanges();
 
-            repositorioAtividades = new RepositorioAtividades(dbContext);
-            servico = new AtividadesServico(repositorioAtividades, repositorioMedicos);
+            repositorio = new RepositorioAtividades(dbContext);
+            servico = new AtividadesServico(repositorio);
 
-            BuilderSetup.SetCreatePersistenceMethod<Atividade>(repositorioAtividades.Adicionar);
+            BuilderSetup.SetCreatePersistenceMethod<Atividade>(repositorio.Adicionar);
             BuilderSetup.SetCreatePersistenceMethod<IList<Atividade>>(atividades =>
             {
-                foreach (Atividade ? atividade in atividades)
-                    repositorioAtividades.Adicionar(atividade);
+                foreach (var atividade in atividades)
+                {
+                    repositorio.Adicionar(atividade);
+                }
             });
         }
 
@@ -40,34 +45,34 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         public void DeveInserirAtividade()
         {
             // Arrange
-            DateTime dataInicio = DateTime.Now.AddDays(1).Date.AddHours(14); // Amanhã às 14:00
-            DateTime dataFim = dataInicio.AddMinutes(30); // 30 minutos de duração
-            Medico medico = new Medico("Dr. Test", "12345-SP", "Cardiologia");
+            var dataInicio = DateTime.Now;
+            var dataFim = dataInicio.AddHours(1);
+            var medicos = new List<Medico> { new Medico("Dr. Test", "12345678", "Cardiologia") };
 
-            // Verifica disponibilidade antes de criar a atividade
-            Assert.IsTrue(medico.EstaDisponivel(dataInicio, dataFim), "O médico deveria estar disponível");
-
-            Atividade atividade = new Atividade(
-                0,
-                dataInicio,
-                dataFim,
-                new List<Medico> { medico },
-                TipoAtividade.Consulta
+            var atividade = new Atividade(
+                id: 0,
+                dataInicio: dataInicio,
+                dataFim: dataFim,
+                medicosEnvolvidos: medicos,
+                tipoAtividade: TipoAtividade.Consulta
             );
 
             // Act
-            medico.AdicionarAtividade(atividade);
+            var resultado = servico.Adicionar(atividade);
 
             // Assert
-            Assert.AreEqual(1, medico.Atividades.Count, "A atividade deveria ter sido adicionada");
-            Assert.AreEqual(dataInicio, medico.Atividades.First().DataInicio);
-            Assert.AreEqual(dataFim, medico.Atividades.First().DataFim);
+            Assert.IsTrue(resultado.IsSuccess);
+            Assert.IsNotNull(resultado.Value);
+            Assert.AreEqual(dataInicio, resultado.Value.DataInicio);
+            Assert.AreEqual(dataFim, resultado.Value.DataFim);
+            Assert.AreEqual(TipoAtividade.Consulta, resultado.Value.TipoAtividade);
+            Assert.IsTrue(resultado.Value.MedicosEnvolvidos.Any());
         }
 
         [TestMethod]
         public void DeveAtualizarAtividade()
         {
-            Atividade ? atividade = Builder<Atividade>
+            var atividade = Builder<Atividade>
                 .CreateNew()
                 .With(a => a.Id = 0) // Garantir que o Id não seja configurado explicitamente
                 .With(a => a.DataInicio = DateTime.Now)
@@ -75,7 +80,7 @@ namespace OrganizaMed.Testes.Integracao.Atividades
                 .Persist();
 
             atividade.DataFim = DateTime.Now.AddHours(2);
-            Result<Atividade> ? resultado = servico.Atualizar(atividade);
+            var resultado = servico.Atualizar(atividade);
 
             Assert.IsTrue(resultado.IsSuccess);
             Assert.AreEqual(atividade.DataFim, resultado.Value.DataFim);
@@ -84,30 +89,30 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         [TestMethod]
         public void DeveExcluirAtividade()
         {
-            Atividade ? atividade = Builder<Atividade>
+            var atividade = Builder<Atividade>
                 .CreateNew()
                 .With(a => a.Id = 0) // Garantir que o Id não seja configurado explicitamente
                 .With(a => a.DataInicio = DateTime.Now)
                 .With(a => a.DataFim = DateTime.Now.AddHours(1))
                 .Persist();
 
-            Result<Atividade> ? resultado = servico.Remover(atividade.Id);
+            var resultado = servico.Remover(atividade.Id);
 
             Assert.IsTrue(resultado.IsSuccess);
-            Assert.IsNull(repositorioAtividades.ObterPorId(atividade.Id));
+            Assert.IsNull(repositorio.ObterPorId(atividade.Id));
         }
 
         [TestMethod]
         public void DeveObterAtividadePorId()
         {
-            Atividade ? atividade = Builder<Atividade>
+            var atividade = Builder<Atividade>
                 .CreateNew()
                 .With(a => a.Id = 0) // Garantir que o Id não seja configurado explicitamente
                 .With(a => a.DataInicio = DateTime.Now)
                 .With(a => a.DataFim = DateTime.Now.AddHours(1))
                 .Persist();
 
-            Result<Atividade> ? resultado = servico.ObterPorId(atividade.Id);
+            var resultado = servico.ObterPorId(atividade.Id);
 
             Assert.IsTrue(resultado.IsSuccess);
             Assert.IsNotNull(resultado.Value);
@@ -116,7 +121,7 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         [TestMethod]
         public void DeveObterTodasAtividades()
         {
-            IList<Atividade> ? atividades = Builder<Atividade>
+            var atividades = Builder<Atividade>
                 .CreateListOfSize(5)
                 .All()
                 .With(a => a.Id = 0) // Garantir que o Id não seja configurado explicitamente
@@ -124,7 +129,7 @@ namespace OrganizaMed.Testes.Integracao.Atividades
                 .With(a => a.DataFim = DateTime.Now.AddHours(1))
                 .Persist();
 
-            Result<List<Atividade>> ? resultado = servico.ObterTodos();
+            var resultado = servico.ObterTodos();
 
             Assert.IsTrue(resultado.IsSuccess);
             Assert.AreEqual(5, resultado.Value.Count);
@@ -134,22 +139,22 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         public void ObterMedicosEnvolvidos_DeveRetornarMedicosParaAtividade()
         {
             // Arrange
-            Medico ? medico = new Medico("Dr. Test", "12345678", "Cardiologia");
-            DateTime dataInicio = DateTime.Now;
-            DateTime dataFim = dataInicio.AddHours(1);
+            var medico = new Medico("Dr. Test", "12345678", "Cardiologia");
+            var dataInicio = DateTime.Now;
+            var dataFim = dataInicio.AddHours(1);
 
-            Atividade ? atividade = new Atividade(
-                0,
-                dataInicio,
-                dataFim,
-                new List<Medico> { medico },
-                TipoAtividade.Consulta
+            var atividade = new Atividade(
+                id: 0,
+                dataInicio: dataInicio,
+                dataFim: dataFim,
+                medicosEnvolvidos: new List<Medico> { medico },
+                tipoAtividade: TipoAtividade.Consulta
             );
 
-            repositorioAtividades.Adicionar(atividade);
+            repositorio.Adicionar(atividade);
 
             // Act
-            List<Medico> ? medicosEnvolvidos = repositorioAtividades.ObterMedicosEnvolvidos(atividade.Id);
+            var medicosEnvolvidos = repositorio.ObterMedicosEnvolvidos(atividade.Id);
 
             // Assert
             Assert.IsNotNull(medicosEnvolvidos);

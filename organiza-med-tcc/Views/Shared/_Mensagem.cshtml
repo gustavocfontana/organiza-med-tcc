@@ -1,10 +1,10 @@
-﻿@model MensagemViewModel
+﻿@model MensagemViewModel?
 
 @if (Model is not null)
 {
-    string ? corAlerta = Model.Titulo == "Sucesso" ? "alert-success" : "alert-danger";
+    var corAlerta = Model.Titulo == "Sucesso" ? "alert-success" : "alert-danger";
 
-    string ? iconeSelecionado = Model.Titulo == "Sucesso" ? "bi-check-circle-fill" : "bi-info-circle-fill";
+    var iconeSelecionado = Model.Titulo == "Sucesso" ? "bi-check-circle-fill" : "bi-info-circle-fill";
 
     <div class="alert @corAlerta alert-dismissible fade show" role="alert">
         <i class="bi @iconeSelecionado"></i>

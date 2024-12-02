@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Dominio.Medicos;
 using OrganizaMed.Infra.Compartilhado;
@@ -20,9 +25,14 @@ namespace OrganizaMed.Infra.Medicos
                 .ToList();
         }
 
+        protected override DbSet<Medico> ObterRegistros()
+        {
+            return dbContext.Medicos;
+        }
+
         public List<Medico> ObterMedicosEnvolvidos(int atividadeId)
         {
-            Atividade ? atividade = dbContext.Atividades
+            var atividade = dbContext.Atividades
                 .Include(a => a.MedicosEnvolvidos)
                 .FirstOrDefault(a => a.Id == atividadeId);
 
@@ -35,11 +45,6 @@ namespace OrganizaMed.Infra.Medicos
                 .Include(a => a.MedicosEnvolvidos)
                 .Where(a => a.MedicosEnvolvidos.Any(m => m.Id == medicoId))
                 .ToList();
-        }
-
-        protected override DbSet<Medico> ObterRegistros()
-        {
-            return dbContext.Medicos;
         }
     }
 }

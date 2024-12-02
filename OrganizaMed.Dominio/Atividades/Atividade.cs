@@ -1,5 +1,6 @@
 ﻿using OrganizaMed.Dominio.Compartilhado;
 
+
 namespace OrganizaMed.Dominio.Atividades
 {
     public enum TipoAtividade
@@ -12,6 +13,11 @@ namespace OrganizaMed.Dominio.Atividades
     {
         protected Atividade() {} // EF
 
+        public DateTime DataInicio { get; set; }
+        public DateTime DataFim { get; set; }
+        public List<Medico> MedicosEnvolvidos { get; set; } = new List<Medico>();
+        public TipoAtividade TipoAtividade { get; set; }
+
         public Atividade(int id, DateTime dataInicio, DateTime dataFim, List<Medico> medicosEnvolvidos, TipoAtividade tipoAtividade)
         {
             Id = id;
@@ -20,11 +26,6 @@ namespace OrganizaMed.Dominio.Atividades
             MedicosEnvolvidos = medicosEnvolvidos ?? new List<Medico>();
             TipoAtividade = tipoAtividade;
         }
-
-        public DateTime DataInicio { get; set; }
-        public DateTime DataFim { get; set; }
-        public List<Medico> MedicosEnvolvidos { get; set; } = new List<Medico>();
-        public TipoAtividade TipoAtividade { get; set; }
 
         public override List<string> Validar()
         {
