@@ -48,3 +48,55 @@ button {
     background-color: #1f1f1f;
     color: #e0e0e0; /* Cor da fonte no modo noturno */
 }
+
+/* Estilo para modo claro (padrão) */
+.table tbody tr td {
+    color: #333;
+}
+
+.table tbody tr.table-success td {
+    color: #0f5132;
+    font-weight: 600;
+}
+
+.table thead th {
+    color: #198754;
+    font-weight: 600;
+}
+
+.table tbody tr:hover td {
+    color: #0d6efd;
+}
+
+/* Estilos para modo escuro */
+.dark-mode .table tbody tr td {
+    color: #e2e2e2; /* cinza claro para melhor legibilidade no modo escuro */
+}
+
+.dark-mode .table tbody tr.table-success td {
+    color: #75b798; /* verde mais claro para modo escuro */
+    font-weight: 600;
+}
+
+.dark-mode .table thead th {
+    color: #75b798; /* verde mais claro para cabeçalho no modo escuro */
+    font-weight: 600;
+}
+
+.dark-mode .table tbody tr:hover td {
+    color: #6ea8fe; /* azul mais claro para hover no modo escuro */
+}
+
+/* Ajuste do background no modo escuro */
+.dark-mode .table {
+    background-color: #212529; /* fundo escuro */
+    color: #e2e2e2;
+}
+
+.dark-mode .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05); /* listras mais sutis no modo escuro */
+}
+
+.dark-mode .table-hover > tbody > tr:hover {
+    background-color: rgba(255, 255, 255, 0.075); /* hover mais sutil no modo escuro */
+}
