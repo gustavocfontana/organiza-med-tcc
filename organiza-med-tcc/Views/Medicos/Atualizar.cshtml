@@ -4,32 +4,123 @@
     ViewBag.Title = "Atualizar Médico";
 }
 
-<div class="col">
-    <div class="row gap-3 my-3 my-xl-5">
-        <form class="col-lg-6 d-grid gap-3 fs-5" asp-action="Atualizar">
-            <div>
-                <label class="control-label fw-semibold mb-1">Nome</label>
-                <input class="form-control mb-1" asp-for="Nome" />
-                <span class="text-danger fs-6" asp-validation-for="Nome"></span>
-            </div>
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
 
-            <div>
-                <label class="control-label fw-semibold mb-1">Crm</label>
-                <input class="form-control mb-1" asp-for="Crm"/>
-                <span class="text-danger fs-6" asp-validation-for="Crm"></span>
-            </div>
+    .page-title {
+        color: #2c3e50;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        text-align: center;
+    }
 
-            <div class="d-grid gap-2 d-md-block mt-4">
-                <button class="btn btn-primary px-5">
-                    <i class="bi bi-floppy-fill me-1"></i>
-                    Gravar
-                </button>
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
 
-                <a class="btn btn-outline-primary px-5" href="/Medicos/Listar">
-                    <i class="bi bi-arrow-return-left me-1"></i>
-                    Voltar
-                </a>
-            </div>
-        </form>
-    </div>
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        transition: border-color 0.2s ease;
+        font-size: 1rem;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+    .control-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #4a5568;
+        font-weight: 500;
+    }
+
+    .text-danger {
+        color: #e53e3e;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background-color: #4299e1;
+        border: none;
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #3182ce;
+        }
+
+    .btn-outline-primary {
+        border: 1px solid #4299e1;
+        color: #4299e1;
+        background: transparent;
+        text-decoration: none;
+        margin-left: 1rem;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #4299e1;
+            color: white;
+        }
+
+    .actions {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-top: 2rem;
+    }
+
+    .icon {
+        margin-right: 0.5rem;
+    }
+</style>
+
+<div class="form-container">
+    <h2 class="page-title">@ViewBag.Title</h2>
+
+    <form asp-action="Atualizar">
+        <div class="form-group">
+            <label class="control-label">Nome</label>
+            <input class="form-control" asp-for="Nome" placeholder="Nome do médico" />
+            <span class="text-danger" asp-validation-for="Nome"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">CRM</label>
+            <input class="form-control" asp-for="Crm" placeholder="CRM do médico" />
+            <span class="text-danger" asp-validation-for="Crm"></span>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-floppy-fill icon"></i>
+                Gravar
+            </button>
+
+            <a class="btn btn-outline-primary" href="/Medicos/Listar">
+                <i class="bi bi-arrow-return-left icon"></i>
+                Voltar
+            </a>
+        </div>
+    </form>
 </div>

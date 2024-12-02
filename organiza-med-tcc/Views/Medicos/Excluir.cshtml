@@ -4,18 +4,131 @@
     ViewBag.Title = "Excluir Médico";
 }
 
-<div class="col">
-    <partial name="_Informacoes" model="Model"></partial>
+<style>
+    .delete-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
 
-    <form class="d-grid gap-2 d-md-block mt-5" asp-action="Excluir">
-        <button class="btn btn-danger px-5">
-            <i class="bi bi-trash-fill me-1"></i>
-            Confirmar
-        </button>
+    .page-title {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        text-align: center;
+    }
 
-        <a class="btn btn-outline-primary px-5" asp-action="Listar">
-            <i class="bi bi-arrow-return-left me-1"></i>
-            Voltar
-        </a>
+    .alert-delete {
+        background-color: #FEF2F2;
+        border: 1px solid #FEE2E2;
+        border-radius: 6px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+        color: #991B1B;
+    }
+
+    .info-container {
+        background-color: #F8FAFC;
+        border-radius: 6px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-item {
+        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #E2E8F0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #4A5568;
+        margin-right: 0.5rem;
+    }
+
+    .info-value {
+        color: #2D3748;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-danger {
+        background-color: #DC2626;
+        border: none;
+        color: white;
+    }
+
+        .btn-danger:hover {
+            background-color: #B91C1C;
+        }
+
+    .btn-outline-primary {
+        border: 1px solid #4299e1;
+        color: #4299e1;
+        background: transparent;
+        text-decoration: none;
+        margin-left: 1rem;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #4299e1;
+            color: white;
+        }
+
+    .actions {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-top: 2rem;
+    }
+
+    .icon {
+        margin-right: 0.5rem;
+    }
+</style>
+
+<div class="delete-container">
+    <h2 class="page-title">@ViewBag.Title</h2>
+
+    <div class="alert-delete">
+        <i class="bi bi-exclamation-triangle-fill icon"></i>
+        Atenção! Esta ação não pode ser desfeita. Você tem certeza que deseja excluir este médico?
+    </div>
+
+    <div class="info-container">
+        <div class="info-item">
+            <span class="info-label">ID:</span>
+            <span class="info-value">[@Model.Id]</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Nome:</span>
+            <span class="info-value">@Model.Nome</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">CRM:</span>
+            <span class="info-value">@Model.Crm</span>
+        </div>
+    </div>
+
+    <form asp-action="Excluir">
+        <div class="actions">
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash-fill icon"></i>
+                Confirmar Exclusão
+            </button>
+
+            <a class="btn btn-outline-primary" asp-action="Listar">
+                <i class="bi bi-arrow-return-left icon"></i>
+                Voltar
+            </a>
+        </div>
     </form>
 </div>
