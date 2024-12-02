@@ -164,3 +164,199 @@ body.dark-mode .top-medicos-table {
     gap: 1rem;
   }
 }
+
+/* Variáveis CSS */
+:root {
+  --primary-color: #2563eb;
+  --secondary-color: #3b82f6;
+  --text-color: #1f2937;
+  --bg-color: #ffffff;
+  --nav-height: 70px;
+  --transition: all 0.3s ease;
+}
+
+/* Estilos da Navbar */
+.header-modern {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.navbar-modern {
+  height: var(--nav-height);
+  padding: 0;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color) !important;
+  transition: var(--transition);
+}
+
+.brand-text {
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-link {
+  position: relative;
+  padding: 0.5rem 1rem !important;
+  color: var(--text-color) !important;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+  .nav-link:hover {
+    color: var(--primary-color) !important;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background: var(--primary-color);
+    transition: var(--transition);
+    transform: translateX(-50%);
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+/* Botão Theme Toggle */
+.theme-toggle-btn {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  font-size: 1.25rem;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+  .theme-toggle-btn:hover {
+    color: var(--primary-color);
+    transform: rotate(15deg);
+  }
+
+/* Container Principal */
+.main-container {
+  min-height: calc(100vh - var(--nav-height) - 60px);
+  padding: 2rem 1rem;
+}
+
+/* Cabeçalho da Página */
+.page-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+
+.header-line {
+  width: 60px;
+  height: 3px;
+  background: var(--primary-color);
+  margin: 0 auto;
+}
+
+/* Footer */
+.footer-modern {
+  background: #f8fafc;
+  padding: 1.5rem 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.social-link {
+  color: var(--text-color);
+  margin-left: 1rem;
+  font-size: 1.25rem;
+  transition: var(--transition);
+}
+
+  .social-link:hover {
+    color: var(--primary-color);
+  }
+
+/* Dark Mode */
+.dark-mode {
+  --text-color: #e2e8f0;
+  --bg-color: #1a1a1a;
+}
+
+  .dark-mode .header-modern {
+    background: rgba(26, 26, 26, 0.95);
+  }
+
+  .dark-mode .footer-modern {
+    background: #242424;
+    border-top: 1px solid #333;
+  }
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .navbar-nav {
+    padding: 1rem 0;
+  }
+
+  .nav-link::after {
+    display: none;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar-nav .nav-item {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.nav-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.nav-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.nav-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.nav-item:nth-child(4) {
+  animation-delay: 0.4s;
+}

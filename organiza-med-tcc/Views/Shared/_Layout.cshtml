@@ -1,16 +1,17 @@
-﻿
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Http
+@using organiza_med_tcc.Extensions
 
 @{
     MensagemViewModel ? mensagem = ViewBag.Mensagem ?? null;
-    string theme = CookieHelper.GetCookie(Context, "theme") ?? "light";
+    var theme = Context.Request.Cookies["theme"] ?? "light";
 }
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewBag.Title - OrganizaMed</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -19,79 +20,96 @@
     <link rel="stylesheet" href="~/css/dark-mode.css" asp-append-version="true" />
 </head>
 <body class="@(theme == "dark" ? "dark-mode" : "")">
-    <header class="header @(theme == "dark" ? "header-dark-mode" : "")">
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 @(theme == "dark" ? "navbar-dark-mode" : "")">
+    <header class="header-modern">
+        <nav class="navbar navbar-expand-sm navbar-modern">
             <div class="container">
-                <a class="navbar-brand fw-semibold fs-4" asp-controller="Home" asp-action="Index">OrganizaMed</a>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-hospital me-2"></i>
+                    <span class="brand-text">OrganizaMed</span>
+                </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <i class="bi bi-list"></i>
                 </button>
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1 justify-content-end">
+                    <ul class="navbar-nav flex-grow-1 justify-content-center">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Início</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door"></i> Início
+                            </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Medicos" asp-action="Listar">Medicos</a>
+                            <a class="nav-link" asp-controller="Medicos" asp-action="Listar">
+                                <i class="bi bi-people"></i> Médicos
+                            </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Atividades" asp-action="Listar">Atividades</a>
+                            <a class="nav-link" asp-controller="Atividades" asp-action="Listar">
+                                <i class="bi bi-calendar-check"></i> Atividades
+                            </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Medicos" asp-action="TopMedicos">Ranking</a>
+                            <a class="nav-link" asp-controller="Medicos" asp-action="TopMedicos">
+                                <i class="bi bi-trophy"></i> Ranking
+                            </a>
                         </li>
-
                     </ul>
+
+                    <button id="theme-toggle" class="theme-toggle-btn">
+                        <i class="bi @(theme == "dark" ? "bi-sun" : "bi-moon")"></i>
+                    </button>
                 </div>
-
-                <li class="nav-item">
-                    <button id="theme-toggle" class="btn btn-outline-dark">@(theme == "dark" ? "Modo Claro" : "Modo Noturno")</button>
-                </li>
-
             </div>
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            <h1 class="fw-semibold mt-4">@ViewBag.Title</h1>
-            <hr>
+    <div class="container main-container">
+        <main role="main">
+            @if (!string.IsNullOrEmpty(ViewBag.Title))
+            {
+                <div class="page-header">
+                    <h1 class="page-title">@ViewBag.Title</h1>
+                    <div class="header-line"></div>
+                </div>
+            }
             <partial name="_Mensagem" model="mensagem"></partial>
-
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer-modern">
         <div class="container">
-            &copy; 2024 - OrganizaMed
+            <div class="footer-content">
+                <p>&copy; @DateTime.Now.Year - OrganizaMed</p>
+                <div class="footer-links">
+                    <a href="https://github.com/gucfontana" class="social-link" target="_blank"><i class="bi bi-github"></i></a>
+                    <a href="https://www.linkedin.com/in/gucfontana" class="social-link" target="_blank"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
         </div>
     </footer>
+
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var themeToggle = document.getElementById("theme-toggle");
+            var themeIcon = themeToggle.querySelector("i");
+
             themeToggle.addEventListener("click", function() {
                 var isDarkMode = document.body.classList.toggle("dark-mode");
                 var theme = isDarkMode ? "dark" : "light";
                 document.cookie = "theme=" + theme + "; path=/";
-                themeToggle.textContent = isDarkMode ? "Modo Claro" : "Modo Noturno";
+                themeIcon.className = isDarkMode ? "bi bi-sun" : "bi bi-moon";
             });
-
-            // Set initial button text based on theme
-            var isDarkMode = document.body.classList.contains("dark-mode");
-            themeToggle.textContent = isDarkMode ? "Modo Claro" : "Modo Noturno";
         });
     </script>
 </body>
