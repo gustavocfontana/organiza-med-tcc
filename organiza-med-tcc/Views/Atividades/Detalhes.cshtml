@@ -4,19 +4,152 @@
     ViewBag.Title = "Detalhes da Atividade";
 }
 
-<div class="col">
-    <partial name="_Informacoes" model="Model"></partial>
+<style>
+    .details-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
 
-    <h3>Médicos Envolvidos:</h3>
-    <ul>
-        @foreach (var medico in Model.MedicosEnvolvidos)
-        {
-            <li>@medico.Nome (@medico.Especialidade)</li>
+    .page-title {
+        color: #2c3e50;
+        margin-bottom: 2rem;
+        text-align: center;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .info-section {
+        background-color: #f8fafc;
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        color: #2d3748;
+        font-size: 1.25rem;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .doctors-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .doctor-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: white;
+        border-radius: 6px;
+        margin-bottom: 0.75rem;
+        border: 1px solid #e2e8f0;
+        transition: transform 0.2s ease;
+    }
+
+        .doctor-item:hover {
+            transform: translateX(5px);
         }
-    </ul>
 
-    <a asp-action="Listar" class="btn btn-outline-primary px-5 mt-5">
-        <i class="bi bi-arrow-return-left me-1"></i>
-        Voltar
-    </a>
+    .doctor-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .doctor-name {
+        color: #2d3748;
+        font-weight: 500;
+    }
+
+    .doctor-specialty {
+        color: #718096;
+        font-size: 0.875rem;
+    }
+
+    .doctor-avatar {
+        background-color: #e2e8f0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: #4a5568;
+    }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: 1px solid #4299e1;
+        color: #4299e1;
+        background: transparent;
+    }
+
+        .back-button:hover {
+            background-color: #4299e1;
+            color: white;
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+</style>
+
+<div class="details-container">
+    <h2 class="page-title">
+        <i class="bi bi-calendar-event" style="color: #4299e1;"></i>
+        @ViewBag.Title
+    </h2>
+
+    <div class="info-section">
+        <partial name="_Informacoes" model="Model" />
+    </div>
+
+    <div class="info-section">
+        <h3 class="section-title">
+            <i class="bi bi-people-fill" style="color: #4299e1;"></i>
+            Médicos Envolvidos
+        </h3>
+
+        <ul class="doctors-list">
+            @foreach (var medico in Model.MedicosEnvolvidos)
+            {
+                <li class="doctor-item">
+                    <div class="doctor-avatar">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div class="doctor-info">
+                        <span class="doctor-name">@medico.Nome</span>
+                        <span class="doctor-specialty">@medico.Especialidade</span>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div style="text-align: center;">
+        <a asp-action="Listar" class="back-button">
+            <i class="bi bi-arrow-return-left"></i>
+            Voltar para Lista
+        </a>
+    </div>
 </div>

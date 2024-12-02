@@ -9,10 +9,10 @@ namespace organiza_med_tcc.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime DataInicio { get; set; }
+        public DateTime DataInicio { get; set; } = DateTime.Now;
 
         [Required]
-        public DateTime DataFim { get; set; }
+        public DateTime DataFim { get; set; } = DateTime.Now.AddHours(1);
 
         [Required]
         public string TipoAtividade { get; set; }

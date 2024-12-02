@@ -4,53 +4,198 @@
     ViewBag.Title = "Listar Atividades";
 }
 
-<div class="col">
-    <a class="btn btn-primary px-4 mt-3" asp-controller="Atividades" asp-action="Adicionar">
-        <i class="bi bi-circle-add"></i>
-        Inserir nova Atividade
-    </a>
+<style>
+    .activities-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 1.5rem;
+    }
 
-    <div class="row gap-2 my-3 my-xl-5">
-        @foreach (var atividadeVm in Model)
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        color: #2c3e50;
+        margin: 0;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .add-button {
+        background-color: #4299e1;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .add-button:hover {
+            background-color: #3182ce;
+            color: white;
+        }
+
+    .activities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .activity-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        transition: transform 0.2s ease;
+    }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .card-header {
+        padding: 1.25rem;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .activity-id {
+        color: #4a5568;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .action-button {
+        color: #4a5568;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        padding: 0.5rem;
+        border-radius: 6px;
+    }
+
+        .action-button:hover {
+            background-color: #f7fafc;
+        }
+
+        .action-button.view:hover {
+            color: #4299e1;
+        }
+
+        .action-button.edit:hover {
+            color: #48bb78;
+        }
+
+        .action-button.delete:hover {
+            color: #e53e3e;
+        }
+
+    .card-content {
+        padding: 1.25rem;
+    }
+
+    .info-group {
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+        .info-group:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+    .info-label {
+        color: #718096;
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        color: #2d3748;
+        font-weight: 500;
+    }
+
+    .activity-type {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        background-color: #EBF4FF;
+        color: #3182CE;
+    }
+</style>
+
+<div class="activities-container">
+    <div class="page-header">
+        <h2 class="page-title">
+            <i class="bi bi-calendar3" style="color: #4299e1;"></i>
+            @ViewBag.Title
+        </h2>
+
+        <a class="add-button" asp-controller="Atividades" asp-action="Adicionar">
+            <i class="bi bi-plus-circle"></i>
+            Nova Atividade
+        </a>
+    </div>
+
+    <div class="activities-grid">
+        @foreach (var atividade in Model)
         {
-            <div class="card col-lg-4 col-xl-3">
-                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="custom-card-font-color p-0">@atividadeVm.Id</h5>
-
-                    <div class="text-end d-flex align-items-center gap-3">
-                        <a title="Detalhes"
-                           class="text-info-emphasis fs-5 custom-card-font-color"
-                           href="/Atividades/Detalhes/@atividadeVm.Id">
+            <div class="activity-card">
+                <div class="card-header">
+                    <span class="activity-id">#@atividade.Id</span>
+                    <div class="action-buttons">
+                        <a class="action-button view" title="Detalhes" href="/Atividades/Detalhes/@atividade.Id">
                             <i class="bi bi-search"></i>
                         </a>
-                        <a title="Atualizar"
-                           class="text-info-emphasis fs-5 custom-card-font-color"
-                           href="/Atividades/Atualizar/@atividadeVm.Id">
+                        <a class="action-button edit" title="Atualizar" href="/Atividades/Atualizar/@atividade.Id">
                             <i class="bi bi-pencil-fill"></i>
                         </a>
-                        <a title="Excluir"
-                           class="text-info-emphasis fs-5 custom-card-font-color" href="/Atividades/Excluir/@atividadeVm.Id">
+                        <a class="action-button delete" title="Excluir" href="/Atividades/Excluir/@atividade.Id">
                             <i class="bi bi-trash-fill"></i>
                         </a>
                     </div>
                 </div>
 
-                <div class="card-body">
-                    <h5 class="card-title custom-card-font-color">@atividadeVm.Medicos</h5>
-                </div>
+                <div class="card-content">
+                    <div class="info-group">
+                        <div class="info-label">Médicos</div>
+                        <div class="info-value">@atividade.Medicos</div>
+                    </div>
 
-                <div class="card-body">
-                    <h5 class="card-title custom-card-font-color">@atividadeVm.DataInicio</h5>
-                </div>
+                    <div class="info-group">
+                        <div class="info-label">Início</div>
+                        <div class="info-value">@atividade.DataInicio.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
 
-                <div class="card-body">
-                    <h5 class="card-title custom-card-font-color">@atividadeVm.DataFim</h5>
-                </div>
+                    <div class="info-group">
+                        <div class="info-label">Término</div>
+                        <div class="info-value">@atividade.DataFim.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
 
-                <div class="card-body">
-                    <h5 class="card-title custom-card-font-color">@atividadeVm.TipoAtividade</h5>
+                    <div class="info-group">
+                        <div class="info-label">Tipo</div>
+                        <span class="activity-type">@atividade.TipoAtividade</span>
+                    </div>
                 </div>
-
             </div>
         }
     </div>
