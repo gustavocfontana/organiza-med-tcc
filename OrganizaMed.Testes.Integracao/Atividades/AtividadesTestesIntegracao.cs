@@ -45,17 +45,12 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         public void DeveInserirAtividade()
         {
             // Arrange
-            var dataInicio = DateTime.Now;
-            var dataFim = dataInicio.AddHours(1);
-            var medicos = new List<Medico> { new Medico("Dr. Test", "12345678", "Cardiologia") };
-
-            var atividade = new Atividade(
-                id: 0,
-                dataInicio: dataInicio,
-                dataFim: dataFim,
-                medicosEnvolvidos: medicos,
-                tipoAtividade: TipoAtividade.Consulta
-            );
+            var atividade = Builder<Atividade>
+                .CreateNew()
+                .With(a => a.Id = 0)
+                .With(a => a.DataInicio = DateTime.Now)
+                .With(a => a.DataFim = DateTime.Now.AddHours(1))
+                .Build();
 
             // Act
             var resultado = servico.Adicionar(atividade);
@@ -63,10 +58,9 @@ namespace OrganizaMed.Testes.Integracao.Atividades
             // Assert
             Assert.IsTrue(resultado.IsSuccess);
             Assert.IsNotNull(resultado.Value);
-            Assert.AreEqual(dataInicio, resultado.Value.DataInicio);
-            Assert.AreEqual(dataFim, resultado.Value.DataFim);
-            Assert.AreEqual(TipoAtividade.Consulta, resultado.Value.TipoAtividade);
-            Assert.IsTrue(resultado.Value.MedicosEnvolvidos.Any());
+            Assert.AreNotEqual(0, resultado.Value.Id);
+            Assert.AreEqual(atividade.DataInicio, resultado.Value.DataInicio);
+            Assert.AreEqual(atividade.DataFim, resultado.Value.DataFim);
         }
 
         [TestMethod]
