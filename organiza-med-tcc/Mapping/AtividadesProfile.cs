@@ -12,7 +12,12 @@ namespace organiza_med_tcc.Mapping
             CreateMap<EditarAtividadesViewModel, Atividade>();
 
             CreateMap<Atividade, ListarAtividadesViewModel>();
-            CreateMap<Atividade, DetalhesAtividadesViewModel>();
+            CreateMap<Atividade, DetalhesAtividadesViewModel>()
+                .ForMember(destino =>
+                        destino.MedicosEnvolvidos,
+                    opt => opt.MapFrom(origem => origem.MedicosEnvolvidos.Select(x => x.Nome)
+                    )
+                );
             CreateMap<Atividade, EditarAtividadesViewModel>();
             CreateMap<Atividade, TopMedicosViewModel>();
         }

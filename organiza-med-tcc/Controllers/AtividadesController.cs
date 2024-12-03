@@ -49,67 +49,44 @@ namespace organiza_med_tcc.Controllers
             return View(model);
         }
 
-       [HttpPost]
-public IActionResult Adicionar(InserirAtividadesViewModel inserirVm)
-{
-    Console.WriteLine("Método Adicionar foi chamado.");
-    Console.WriteLine($"DataInicio: {inserirVm.DataInicio}");
-    Console.WriteLine($"DataFim: {inserirVm.DataFim}");
-
-    if (!ModelState.IsValid)
-    {
-        Console.WriteLine("ModelState não é válido.");
-        foreach (var modelState in ModelState.Values)
+        [HttpPost]
+        public IActionResult Adicionar(InserirAtividadesViewModel inserirVm)
         {
-            foreach (var error in modelState.Errors)
+            if (!ModelState.IsValid)
             {
-                Console.WriteLine($"Erro de validação: {error.ErrorMessage}");
+                inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
+                return View(inserirVm);
             }
+
+            // Obter os médicos completos baseado nos IDs
+            var medicos = new List<Medico>();
+            foreach (var medicoId in inserirVm.MedicoId)
+            {
+                var medicoResult = servicoMedicos.ObterPorId(medicoId);
+                if (medicoResult.IsSuccess)
+                {
+                    medicos.Add(medicoResult.Value);
+                }
+            }
+
+            var atividade = mapeador.Map<Atividade>(inserirVm);
+            atividade.MedicosEnvolvidos = medicos; // Atribuir a lista de médicos
+
+            var resultado = servico.Adicionar(atividade);
+
+            if (resultado.IsFailed)
+            {
+                ApresentarMensagemDeErro(resultado.ToResult());
+                inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
+                return View(inserirVm);
+            }
+
+            // Atualiza o ranking após adicionar uma nova atividade
+            servicoMedicos.AtualizarRanking();
+
+            ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
+            return RedirectToAction(nameof ( Listar ));
         }
-
-        inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
-        return View(inserirVm);
-    }
-
-    var medicosIndisponiveis = servicoMedicos.VerificarDisponibilidade(inserirVm.MedicoId, inserirVm.DataInicio, inserirVm.DataFim);
-    Console.WriteLine($"Médicos indisponíveis: {string.Join(", ", medicosIndisponiveis)}");
-
-    if (medicosIndisponiveis.Any())
-    {
-        Console.WriteLine("Existem médicos indisponíveis.");
-        ModelState.AddModelError("", "Os seguintes médicos não estão disponíveis no período selecionado: " + string.Join(", ", medicosIndisponiveis));
-        inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
-        return View(inserirVm);
-    }
-
-    var atividade = mapeador.Map<Atividade>(inserirVm);
-    Console.WriteLine($"Dados da atividade mapeada: {JsonConvert.SerializeObject(atividade)}");
-
-    var resultado = servico.Adicionar(atividade);
-    Console.WriteLine($"Resultado da adição da atividade: {resultado.IsSuccess}");
-
-    if (resultado.IsFailed)
-    {
-        Console.WriteLine("Falha ao adicionar atividade.");
-        ApresentarMensagemDeErro(resultado.ToResult());
-        inserirVm.Medicos = servicoMedicos.ObterTodos().Value;
-        return View(inserirVm);
-    }
-
-    var resultadoRk = servico.Adicionar(atividade);
-
-    if (resultadoRk.IsSuccess)
-    {
-        // Atualiza o ranking após adicionar uma nova atividade
-        servicoMedicos.AtualizarRanking();
-
-        ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
-        return RedirectToAction(nameof ( Listar ));
-    }
-
-    ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
-    return RedirectToAction(nameof(Listar));
-}
 
         public IActionResult Atualizar(int id)
         {

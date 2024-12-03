@@ -14,9 +14,10 @@ namespace OrganizaMed.Aplicacao.Servicos
         private readonly IRepositorioAtividades repositorioAtividade;
         private readonly IRepositorioMedicos repositorioMedico;
 
-        public AtividadesServico(IRepositorioAtividades repositorioAtividade)
+        public AtividadesServico(IRepositorioAtividades repositorioAtividade, IRepositorioMedicos repositorioMedico)
         {
             this.repositorioAtividade = repositorioAtividade;
+            this.repositorioMedico = repositorioMedico;
         }
 
         public Result<Atividade> Adicionar(Atividade atividade)

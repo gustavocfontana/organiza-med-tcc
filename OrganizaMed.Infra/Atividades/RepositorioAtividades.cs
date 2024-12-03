@@ -20,6 +20,13 @@ namespace OrganizaMed.Infra.Atividades
             return dbContext.Atividades;
         }
 
+        public override Atividade ? ObterPorId(int id)
+        {
+            return dbContext.Atividades
+                .Include(a => a.MedicosEnvolvidos)
+                .FirstOrDefault(a => a.Id == id);
+        }
+
         public List<Medico> ObterMedicosEnvolvidos(int atividadeId)
         {
             var atividade = dbContext.Atividades

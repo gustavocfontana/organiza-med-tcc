@@ -57,7 +57,7 @@ namespace organiza_med_tcc.Models
 
         public List<int> MedicoId { get; set; }
 
-        public IEnumerable<Medico> ? Medicos { get; set; }
+        public IEnumerable<string> ? Medicos { get; set; }
     }
 
     public class DetalhesAtividadesViewModel
@@ -66,6 +66,6 @@ namespace organiza_med_tcc.Models
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public string TipoAtividade { get; set; }
-        public IEnumerable<Medico> MedicosEnvolvidos { get; set; }
+        public IEnumerable<string> MedicosEnvolvidos { get; set; }
     }
 }

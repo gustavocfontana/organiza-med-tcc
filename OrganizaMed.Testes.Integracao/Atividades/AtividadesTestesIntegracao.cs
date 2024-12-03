@@ -9,6 +9,7 @@ using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Infra.Atividades;
 using FluentResults;
 using OrganizaMed.Aplicacao.Servicos;
+using OrganizaMed.Infra.Medicos;
 
 namespace OrganizaMed.Testes.Integracao.Atividades
 {
@@ -19,6 +20,8 @@ namespace OrganizaMed.Testes.Integracao.Atividades
         private OrganizaMedDbContext dbContext;
         private RepositorioAtividades repositorio;
         private AtividadesServico servico;
+        private MedicosServico medicosServico;
+        private RepositorioMedicos repositorioMedicos;
 
         [TestInitialize]
         public void Inicializar()
@@ -29,7 +32,10 @@ namespace OrganizaMed.Testes.Integracao.Atividades
             dbContext.SaveChanges();
 
             repositorio = new RepositorioAtividades(dbContext);
-            servico = new AtividadesServico(repositorio);
+            servico = new AtividadesServico(repositorio, repositorioMedicos);
+
+            repositorioMedicos = new RepositorioMedicos(dbContext);
+            medicosServico = new MedicosServico(repositorioMedicos);
 
             BuilderSetup.SetCreatePersistenceMethod<Atividade>(repositorio.Adicionar);
             BuilderSetup.SetCreatePersistenceMethod<IList<Atividade>>(atividades =>
