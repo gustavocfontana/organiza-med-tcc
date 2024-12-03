@@ -81,43 +81,74 @@ namespace OrganizaMed.Testes.Integracao.Medicos
             Assert.AreEqual(0, medicos.Count);
         }
 
-        [TestMethod]
-        public void DeveAtualizarERetornarRanking()
-        {
-            // Criar médicos
-            var medico1 = new Medico("João Silva", "12345678", "Cardiologia");
-            var medico2 = new Medico("Maria Souza", "87654321", "Pediatria");
-            var medico3 = new Medico("Carlos Oliveira", "11223344", "Dermatologia");
+[TestMethod]
+public void DeveAtualizarERetornarRanking()
+{
+    // Arrange - Criar médicos com CRMs no formato correto
+    var medico1 = new Medico("João Silva", "12345-SP", "Cardiologia");
+    var medico2 = new Medico("Maria Souza", "54321-SP", "Pediatria");
+    var medico3 = new Medico("Carlos Oliveira", "98765-SP", "Dermatologia");
 
-            // Adicionar atividades
-            var atividade1 = new Atividade(0, DateTime.Now.AddHours(-6), DateTime.Now.AddHours(-4), new List<Medico> { medico1 }, TipoAtividade.Consulta);
-            var atividade2 = new Atividade(0, DateTime.Now.AddHours(-5), DateTime.Now.AddHours(-3), new List<Medico> { medico2 }, TipoAtividade.Cirurgia);
-            var atividade3 = new Atividade(0, DateTime.Now.AddHours(-8), DateTime.Now.AddHours(-6), new List<Medico> { medico3 }, TipoAtividade.Consulta);
+    // Criar atividades com durações diferentes para cada médico, sem sobreposição
+    // Médico 1: 4 horas de trabalho (2 atividades de 2 horas)
+    var atividade1 = new Atividade(0, 
+        DateTime.Now.AddHours(-8), // 8:00 - 10:00
+        DateTime.Now.AddHours(-6), 
+        new List<Medico> { medico1 }, 
+        TipoAtividade.Consulta);
 
-            medico1.AdicionarAtividade(atividade1);
-            medico2.AdicionarAtividade(atividade2);
-            medico3.AdicionarAtividade(atividade3);
+    var atividade2 = new Atividade(0, 
+        DateTime.Now.AddHours(-5), // 11:00 - 13:00
+        DateTime.Now.AddHours(-3), 
+        new List<Medico> { medico1 }, 
+        TipoAtividade.Consulta);
 
-            // Persistir médicos
-            repositorio.Adicionar(medico1);
-            repositorio.Adicionar(medico2);
-            repositorio.Adicionar(medico3);
+    // Médico 2: 3 horas de trabalho (1 atividade de 3 horas)
+    var atividade3 = new Atividade(0, 
+        DateTime.Now.AddHours(-3), // 13:00 - 16:00
+        DateTime.Now, 
+        new List<Medico> { medico2 }, 
+        TipoAtividade.Cirurgia);
 
-            // Listar médicos
-            var medicos = repositorio.ObterTodos().ToList();
+    // Médico 3: 2 horas de trabalho (1 atividade de 2 horas)
+    var atividade4 = new Atividade(0, 
+        DateTime.Now.AddHours(-2), // 14:00 - 16:00
+        DateTime.Now, 
+        new List<Medico> { medico3 }, 
+        TipoAtividade.Consulta);
 
-            // Atualizar ranking
-            medico1.AtualizarRanking(medicos);
+    // Adicionar atividades aos médicos
+    medico1.AdicionarAtividade(atividade1);
+    medico1.AdicionarAtividade(atividade2);
+    medico2.AdicionarAtividade(atividade3);
+    medico3.AdicionarAtividade(atividade4);
 
-            // Verificar rankings
-            var medicoCarlos = medicos.First(m => m.Crm == "11223344");
-            var medicoJoao = medicos.First(m => m.Crm == "12345678");
-            var medicoMaria = medicos.First(m => m.Crm == "87654321");
+    // Persistir médicos e atividades no banco
+    dbContext.Medicos.AddRange(medico1, medico2, medico3);
+    dbContext.Atividades.AddRange(atividade1, atividade2, atividade3, atividade4);
+    dbContext.SaveChanges();
 
-            Assert.AreEqual(3, medicoCarlos.Ranking); // Carlos Oliveira
-            Assert.AreEqual(1, medicoJoao.Ranking); // João Silva
-            Assert.AreEqual(2, medicoMaria.Ranking); // Maria Souza
-        }
+    // Act - Obter lista de médicos e atualizar ranking
+    var medicos = repositorio.ObterTodos();
+    medico1.AtualizarRanking(medicos);
+
+    // Assert - Verificar se os rankings estão corretos
+    var medicoMaisHoras = medicos.First(m => m.Nome == "João Silva");      // 4 horas
+    var medicoHorasMedias = medicos.First(m => m.Nome == "Maria Souza");   // 3 horas
+    var medicoMenosHoras = medicos.First(m => m.Nome == "Carlos Oliveira");// 2 horas
+
+    Assert.AreEqual(1, medicoMaisHoras.Ranking);    // Deve ser 1º lugar (4 horas)
+    Assert.AreEqual(2, medicoHorasMedias.Ranking);  // Deve ser 2º lugar (3 horas)
+    Assert.AreEqual(3, medicoMenosHoras.Ranking);   // Deve ser 3º lugar (2 horas)
+
+    // Verificar se as horas trabalhadas foram calculadas corretamente, com margem de tolerância
+    Assert.IsTrue(Math.Abs(medicoMaisHoras.HorasTrabalhadas - 4) < 0.01, 
+        $"Horas trabalhadas do médico 1 deveria ser aproximadamente 4, mas foi {medicoMaisHoras.HorasTrabalhadas}");
+    Assert.IsTrue(Math.Abs(medicoHorasMedias.HorasTrabalhadas - 3) < 0.01,
+        $"Horas trabalhadas do médico 2 deveria ser aproximadamente 3, mas foi {medicoHorasMedias.HorasTrabalhadas}");
+    Assert.IsTrue(Math.Abs(medicoMenosHoras.HorasTrabalhadas - 2) < 0.01,
+        $"Horas trabalhadas do médico 3 deveria ser aproximadamente 2, mas foi {medicoMenosHoras.HorasTrabalhadas}");
+}
 
         [TestMethod]
         public void DeveObterAtividadesPorMedico()
