@@ -13,17 +13,23 @@ namespace organiza_med_tcc
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Configure Services
             builder.Services.AddDbContext<OrganizaMedDbContext>();
+
             builder.Services.AddScoped<IRepositorioMedicos, RepositorioMedicos>();
             builder.Services.AddScoped<MedicosServico>();
+
             builder.Services.AddScoped<IRepositorioAtividades, RepositorioAtividades>();
             builder.Services.AddScoped<AtividadesServico>();
-            builder.Services.AddAutoMapper(cfg => cfg.AddMaps(Assembly.GetExecutingAssembly()));
+
+            builder.Services.AddAutoMapper(cfg =>
+            {
+                cfg.AddMaps(Assembly.GetExecutingAssembly());
+            });
+
             builder.Services.AddScoped<AutenticacaoServico>();
             builder.Services.AddIdentity<Usuario, Perfil>()
                 .AddEntityFrameworkStores<OrganizaMedDbContext>()
@@ -41,17 +47,19 @@ namespace organiza_med_tcc
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
-                {
-                    options.Cookie.Name = "AspNetCore.Cookies";
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
-                    options.SlidingExpiration = true;
-                });
+                    {
+                        options.Cookie.Name = "AspNetCore.Cookies";
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+                        options.SlidingExpiration = true;
+                    }
+                );
 
             builder.Services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/Autenticacao/Login";
-                options.AccessDeniedPath = "/Autenticacao/AcessoNegado";
-            });
+                {
+                    options.LoginPath = "/Autenticacao/Login";
+                    options.AccessDeniedPath = "/Autenticacao/AcessoNegado";
+                }
+            );
 
             builder.Services.AddControllersWithViews();
 
@@ -64,63 +72,66 @@ namespace organiza_med_tcc
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
             app.UseRouting();
+
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            #region DadosIniciais
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<OrganizaMedDbContext>();
-    context.Database.EnsureCreated();
+//            using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    var medicoServico = services.GetRequiredService<MedicosServico>();
+//    var atividadeServico = services.GetRequiredService<AtividadesServico>();
 
-    if (!context.Medicos.Any())
-    {
-        var medicos = new List<Medico>
-        {
-            new Medico("Dr. João Silva", "12345-SP", "Cardiologia"),
-            new Medico("Dra. Maria Souza", "67890-SP", "Neurologia"),
-            new Medico("Dr. Carlos Pereira", "11223-SP", "Ortopedia"),
-            new Medico("Dra. Ana Lima", "44556-SP", "Dermatologia"),
-            new Medico("Dr. Pedro Gomes", "77889-SP", "Pediatria"),
-            new Medico("Dra. Julia Santos", "99001-SP", "Geriatria"),
-            new Medico("Dr. Marcos Alves", "22334-SP", "Ginecologia"),
-            new Medico("Dra. Paula Ferreira", "55667-SP", "Oftalmologia"),
-            new Medico("Dr. Ricardo Almeida", "88990-SP", "Oncologia"),
-            new Medico("Dra. Vanessa Costa", "33445-SP", "Psiquiatria")
-        };
+//    // Adicionar médicos pré-determinados
+//    var medicos = new List<Medico>
+//    {
+//        new Medico("Dr. João Silva", "12345-SP", "Cardiologia"),
+//        new Medico("Dra. Maria Oliveira", "67890-RJ", "Pediatria"),
+//        new Medico("Dr. Pedro Santos", "11223-MG", "Ortopedia"),
+//        new Medico("Dra. Ana Costa", "44556-BA", "Dermatologia"),
+//        new Medico("Dr. Carlos Souza", "77889-PR", "Neurologia"),
+//        new Medico("Dra. Paula Lima", "99001-SC", "Ginecologia"),
+//        new Medico("Dr. Ricardo Alves", "22334-ES", "Psiquiatria"),
+//        new Medico("Dra. Fernanda Ribeiro", "55667-PE", "Oftalmologia")
+//    };
 
-        context.Medicos.AddRange(medicos);
-        await context.SaveChangesAsync(); 
-    }
+//    foreach (var medico in medicos)
+//    {
+//        var resultado = medicoServico.Adicionar(medico);
+//        if (resultado.IsFailed)
+//        {
+//            Console.WriteLine($"Erro ao adicionar médico {medico.Nome}: {string.Join(", ", resultado.Errors)}");
+//        }
+//    }
 
-    if (!context.Atividades.Any())
-    {
-        var medicos = context.Medicos.ToList();
-        var atividades = new List<Atividade>
-        {
-            new Atividade(id: 0, DateTime.Now.AddHours(-3), DateTime.Now.AddHours(-2), new List<Medico> { medicos[0] }, TipoAtividade.Consulta),
-            new Atividade(id: 0, DateTime.Now.AddHours(-2), DateTime.Now.AddHours(-1), new List<Medico> { medicos[1] }, TipoAtividade.Cirurgia),
-            new Atividade(id: 0, DateTime.Now.AddHours(-5), DateTime.Now.AddHours(-4), new List<Medico> { medicos[2] }, TipoAtividade.Consulta),
-            new Atividade(id: 0, DateTime.Now.AddHours(-4), DateTime.Now.AddHours(-3), new List<Medico> { medicos[3] }, TipoAtividade.Cirurgia),
-            new Atividade(id: 0, DateTime.Now.AddHours(-6), DateTime.Now.AddHours(-5), new List<Medico> { medicos[4] }, TipoAtividade.Consulta),
-            new Atividade(id: 0, DateTime.Now.AddHours(-1), DateTime.Now, new List<Medico> { medicos[5] }, TipoAtividade.Cirurgia),
-            new Atividade(id: 0, DateTime.Now.AddHours(-8), DateTime.Now.AddHours(-7), new List<Medico> { medicos[6] }, TipoAtividade.Consulta),
-            new Atividade(id: 0, DateTime.Now.AddHours(-7), DateTime.Now.AddHours(-6), new List<Medico> { medicos[7] }, TipoAtividade.Cirurgia),
-            new Atividade(id: 0, DateTime.Now.AddHours(-9), DateTime.Now.AddHours(-8), new List<Medico> { medicos[8] }, TipoAtividade.Consulta),
-            new Atividade(id: 0, DateTime.Now.AddHours(-10), DateTime.Now.AddHours(-9), new List<Medico> { medicos[9] }, TipoAtividade.Cirurgia)
-        };
+//    var atividades = new List<Atividade>
+//    {
+//        new Atividade(1, DateTime.Now.AddHours(1), DateTime.Now.AddHours(2), new List<Medico> { medicos[0] }, TipoAtividade.Consulta),
+//        new Atividade(2, DateTime.Now.AddHours(3), DateTime.Now.AddHours(5), new List<Medico> { medicos[1] }, TipoAtividade.Cirurgia),
+//        new Atividade(3, DateTime.Now.AddHours(6), DateTime.Now.AddHours(7), new List<Medico> { medicos[2] }, TipoAtividade.Consulta),
+//        new Atividade(4, DateTime.Now.AddHours(8), DateTime.Now.AddHours(9), new List<Medico> { medicos[3] }, TipoAtividade.Cirurgia),
+//        new Atividade(5, DateTime.Now.AddHours(10), DateTime.Now.AddHours(12), new List<Medico> { medicos[4] }, TipoAtividade.Consulta),
+//        new Atividade(6, DateTime.Now.AddHours(13), DateTime.Now.AddHours(14), new List<Medico> { medicos[5] }, TipoAtividade.Cirurgia),
+//        new Atividade(7, DateTime.Now.AddHours(15), DateTime.Now.AddHours(16), new List<Medico> { medicos[6] }, TipoAtividade.Consulta),
+//        new Atividade(8, DateTime.Now.AddHours(17), DateTime.Now.AddHours(19), new List<Medico> { medicos[7] }, TipoAtividade.Cirurgia)
+//    };
 
-        context.Atividades.AddRange(atividades);
-        await context.SaveChangesAsync();
-    }
-}
-#endregion
+//    foreach (var atividade in atividades)
+//    {
+//        var resultado = atividadeServico.Adicionar(atividade);
+//        if (resultado.IsFailed)
+//        {
+//            Console.WriteLine($"Erro ao adicionar atividade: {string.Join(", ", resultado.Errors)}");
+//        }
+//    }
+//}
 
-            app.Run();
+app.Run();
         }
     }
 }
