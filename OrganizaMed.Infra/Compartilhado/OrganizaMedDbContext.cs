@@ -24,7 +24,9 @@ namespace OrganizaMed.Infra.Compartilhado
 
             var connectionString = config.GetConnectionString("SqlServer");
 
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlServer(connectionString, dbOptions =>
+                dbOptions.EnableRetryOnFailure()
+                );
 
             base.OnConfiguring(optionsBuilder);
         }
