@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>organiza_med_tcc</RootNamespace>
+    <UserSecretsId>41714528-b968-4112-a7eb-70e1c1c61bda</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
