@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using OrganizaMed.Aplicacao.Servicos;
 using OrganizaMed.Dominio.Atividades;
 using OrganizaMed.Dominio.Autenticacao;
@@ -15,6 +16,8 @@ namespace organiza_med_tcc
     {
         public static void Main(string[] args)
         {
+            const string politicaCors = "PermitirQualquerOrigem";
+
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<OrganizaMedDbContext>();
@@ -61,16 +64,34 @@ namespace organiza_med_tcc
                 }
             );
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: politicaCors,
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
-            if (!app.Environment.IsDevelopment())
-            {
                 app.UseHsts();
-            }
+
+                // migrations 
+                using ( var scope = app.Services.CreateScope() )
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<OrganizaMedDbContext>();
+                    MigradorBancoDados.AtualizarBancoDados(dbContext);
+                }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(politicaCors);
+
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -82,54 +103,54 @@ namespace organiza_med_tcc
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             #region DadosIniciais
-            using ( var scope = app.Services.CreateScope() )
-            {
-                var services = scope.ServiceProvider;
-                var medicoServico = services.GetRequiredService<MedicosServico>();
-                var atividadeServico = services.GetRequiredService<AtividadesServico>();
-
-                var medicos = new List<Medico>
-                {
-                    new Medico("Dr. João Silva", "12345-SP", "Cardiologia"),
-                    new Medico("Dra. Maria Oliveira", "67890-RJ", "Pediatria"),
-                    new Medico("Dr. Pedro Santos", "11223-MG", "Ortopedia"),
-                    new Medico("Dra. Ana Costa", "44556-BA", "Dermatologia"),
-                    new Medico("Dr. Carlos Souza", "77889-PR", "Neurologia"),
-                    new Medico("Dra. Paula Lima", "99001-SC", "Ginecologia"),
-                    new Medico("Dr. Ricardo Alves", "22334-ES", "Psiquiatria"),
-                    new Medico("Dra. Fernanda Ribeiro", "55667-PE", "Oftalmologia")
-                };
-
-                foreach (var medico in medicos)
-                {
-                    var resultado = medicoServico.Adicionar(medico);
-                    if (resultado.IsFailed)
-                    {
-                        Console.WriteLine($"Erro ao adicionar médico {medico.Nome}: {string.Join(", ", resultado.Errors)}");
-                    }
-                }
-
-                var atividades = new List<Atividade>
-                {
-                    new Atividade(0, DateTime.Now.AddHours(1), DateTime.Now.AddHours(2), new List<Medico> { medicos[0] }, TipoAtividade.Consulta),
-                    new Atividade(0, DateTime.Now.AddHours(3), DateTime.Now.AddHours(5), new List<Medico> { medicos[1] }, TipoAtividade.Cirurgia),
-                    new Atividade(0, DateTime.Now.AddHours(6), DateTime.Now.AddHours(7), new List<Medico> { medicos[2] }, TipoAtividade.Consulta),
-                    new Atividade(0, DateTime.Now.AddHours(8), DateTime.Now.AddHours(9), new List<Medico> { medicos[3] }, TipoAtividade.Cirurgia),
-                    new Atividade(0, DateTime.Now.AddHours(10), DateTime.Now.AddHours(12), new List<Medico> { medicos[4] }, TipoAtividade.Consulta),
-                    new Atividade(0, DateTime.Now.AddHours(13), DateTime.Now.AddHours(14), new List<Medico> { medicos[5] }, TipoAtividade.Cirurgia),
-                    new Atividade(0, DateTime.Now.AddHours(15), DateTime.Now.AddHours(16), new List<Medico> { medicos[6] }, TipoAtividade.Consulta),
-                    new Atividade(0, DateTime.Now.AddHours(17), DateTime.Now.AddHours(19), new List<Medico> { medicos[7] }, TipoAtividade.Cirurgia)
-                };
-
-                foreach (var atividade in atividades)
-                {
-                    var resultado = atividadeServico.Adicionar(atividade);
-                    if (resultado.IsFailed)
-                    {
-                        Console.WriteLine($"Erro ao adicionar atividade: {string.Join(", ", resultado.Errors)}");
-                    }
-                }
-            }
+//           using ( var scope = app.Services.CreateScope() )
+//           {
+//               var services = scope.ServiceProvider;
+//               var medicoServico = services.GetRequiredService<MedicosServico>();
+//               var atividadeServico = services.GetRequiredService<AtividadesServico>();
+//
+//               var medicos = new List<Medico>
+//               {
+//                   new Medico("Dr. João Silva", "12345-SP", "Cardiologia"),
+//                   new Medico("Dra. Maria Oliveira", "67890-RJ", "Pediatria"),
+//                   new Medico("Dr. Pedro Santos", "11223-MG", "Ortopedia"),
+//                   new Medico("Dra. Ana Costa", "44556-BA", "Dermatologia"),
+//                   new Medico("Dr. Carlos Souza", "77889-PR", "Neurologia"),
+//                   new Medico("Dra. Paula Lima", "99001-SC", "Ginecologia"),
+//                   new Medico("Dr. Ricardo Alves", "22334-ES", "Psiquiatria"),
+//                   new Medico("Dra. Fernanda Ribeiro", "55667-PE", "Oftalmologia")
+//               };
+//
+//               foreach (var medico in medicos)
+//               {
+//                   var resultado = medicoServico.Adicionar(medico);
+//                   if (resultado.IsFailed)
+//                   {
+//                       Console.WriteLine($"Erro ao adicionar médico {medico.Nome}: {string.Join(", ", resultado.Errors)}");
+//                   }
+//               }
+//
+//               var atividades = new List<Atividade>
+//               {
+//                   new Atividade(0, DateTime.Now.AddHours(1), DateTime.Now.AddHours(2), new List<Medico> { medicos[0] }, TipoAtividade.Consulta),
+//                   new Atividade(0, DateTime.Now.AddHours(3), DateTime.Now.AddHours(5), new List<Medico> { medicos[1] }, TipoAtividade.Cirurgia),
+//                   new Atividade(0, DateTime.Now.AddHours(6), DateTime.Now.AddHours(7), new List<Medico> { medicos[2] }, TipoAtividade.Consulta),
+//                   new Atividade(0, DateTime.Now.AddHours(8), DateTime.Now.AddHours(9), new List<Medico> { medicos[3] }, TipoAtividade.Cirurgia),
+//                   new Atividade(0, DateTime.Now.AddHours(10), DateTime.Now.AddHours(12), new List<Medico> { medicos[4] }, TipoAtividade.Consulta),
+//                   new Atividade(0, DateTime.Now.AddHours(13), DateTime.Now.AddHours(14), new List<Medico> { medicos[5] }, TipoAtividade.Cirurgia),
+//                   new Atividade(0, DateTime.Now.AddHours(15), DateTime.Now.AddHours(16), new List<Medico> { medicos[6] }, TipoAtividade.Consulta),
+//                   new Atividade(0, DateTime.Now.AddHours(17), DateTime.Now.AddHours(19), new List<Medico> { medicos[7] }, TipoAtividade.Cirurgia)
+//               };
+//
+//               foreach (var atividade in atividades)
+//               {
+//                   var resultado = atividadeServico.Adicionar(atividade);
+//                   if (resultado.IsFailed)
+//                   {
+//                       Console.WriteLine($"Erro ao adicionar atividade: {string.Join(", ", resultado.Errors)}");
+//                   }
+//               }
+//           }
 #endregion
 
 app.Run();
