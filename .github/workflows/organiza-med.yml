@@ -7,10 +7,9 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: organiza-med
-  AZURE_WEBAPP_PACKAGE_PATH: 'organiza-med-tcc/published'
+  AZURE_WEBAPP_PACKAGE_PATH: './published'
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: '6.0.x'
-  WORKING_DIRECTORY: 'organiza-med-tcc'
 
 jobs:
   build-and-deploy:
@@ -32,13 +31,13 @@ jobs:
         client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
     
     - name: Restore
-      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+      run: dotnet restore
       
     - name: Build
-      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+      run: dotnet build --configuration ${{ env.CONFIGURATION }} --no-restore
       
     - name: Publish
-      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+      run: dotnet publish -c ${{ env.CONFIGURATION }} --no-build -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     
     - name: Deploy
       uses: azure/webapps-deploy@v2
