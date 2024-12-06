@@ -70,7 +70,7 @@ namespace organiza_med_tcc.Controllers
             }
 
             var atividade = mapeador.Map<Atividade>(inserirVm);
-            atividade.MedicosEnvolvidos = medicos; // Atribuir a lista de médicos
+            atividade.MedicosEnvolvidos = medicos;
 
             var resultado = servico.Adicionar(atividade);
 
@@ -81,9 +81,7 @@ namespace organiza_med_tcc.Controllers
                 return View(inserirVm);
             }
 
-            // Atualiza o ranking após adicionar uma nova atividade
             servicoMedicos.AtualizarRanking();
-
             ApresentarMensagemDeSucesso($"O registro ID [{atividade.Id}] foi inserido com sucesso!");
             return RedirectToAction(nameof ( Listar ));
         }

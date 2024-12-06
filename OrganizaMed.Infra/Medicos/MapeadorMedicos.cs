@@ -32,6 +32,6 @@ public class MapeadorMedicos : IEntityTypeConfiguration<Medico>
             .IsRequired();
         builder.HasMany(m => m.Atividades)
             .WithMany(a => a.MedicosEnvolvidos)
-            .UsingEntity(j => j.ToTable("MedicoAtividades"));
+            .UsingEntity(j => j.ToTable("AtividadeMedicos"));
     }
 }

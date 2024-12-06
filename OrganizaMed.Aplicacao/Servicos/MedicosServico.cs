@@ -82,11 +82,10 @@ namespace OrganizaMed.Aplicacao.Servicos
             foreach (var medicoId in medicoIds)
             {
                 var medico = ObterPorId(medicoId).Value;
-                if (medico.Atividades.Any(a => a.DataInicio < dataFim && a.DataFim > dataInicio))
-                    if (medico != null && !medico.EstaDisponivel(dataInicio, dataFim))
-                    {
-                        medicosIndisponiveis.Add(medico.Nome);
-                    }
+                if (medico != null && !medico.EstaDisponivel(dataInicio, dataFim))
+                {
+                    medicosIndisponiveis.Add(medico.Nome);
+                }
             }
 
             return medicosIndisponiveis;

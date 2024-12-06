@@ -45,5 +45,12 @@ namespace OrganizaMed.Infra.Medicos
                 .Where(a => a.MedicosEnvolvidos.Any(m => m.Id == medicoId))
                 .ToList();
         }
+
+        public override Medico ? ObterPorId(int id)
+        {
+            return dbContext.Medicos
+                .Include(m => m.Atividades)
+                .FirstOrDefault(m => m.Id == id);
+        }
     }
 }
