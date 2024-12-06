@@ -360,3 +360,126 @@ body.dark-mode .top-medicos-table {
 .nav-item:nth-child(4) {
   animation-delay: 0.4s;
 }
+
+.user-card {
+  background-color: #f8f9fa;
+  border: 2px solid #0d6efd;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-card:hover {
+  background-color: #0d6efd;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-card i {
+  font-size: 1.2rem;
+}
+
+.logout-btn {
+  background-color: #0d6efd;
+  border: 2px solid #0d6efd;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout-btn:hover {
+  background-color: #0b5ed7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logout-btn i {
+  font-size: 1.2rem;
+}
+
+/* Estilos para o container dos botões */
+.d-flex.gap-1.ms-4 {
+  gap: 12px !important; /* Aumenta um pouco o espaço entre os botões */
+}
+
+/* Estilos para os controles do usuário */
+.user-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Estilo do card do usuário */
+.nav-user-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: transparent;
+  border: 2px solid var(--bs-primary);
+  color: var(--bs-primary);
+}
+
+.nav-user-card:hover {
+  background: var(--bs-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo do botão de logout */
+.nav-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: var(--bs-primary);
+  border: 2px solid var(--bs-primary);
+  color: white;
+}
+
+.nav-logout-btn:hover {
+  background: var(--bs-primary-dark, #0a58ca);
+  border-color: var(--bs-primary-dark, #0a58ca);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para modo escuro */
+.dark-mode .nav-user-card {
+  border-color: var(--bs-primary);
+  color: var(--bs-primary);
+}
+
+.dark-mode .nav-user-card:hover {
+  background: var(--bs-primary);
+  color: var(--bs-dark);
+}
+
+.dark-mode .nav-logout-btn {
+  background: var(--bs-primary);
+  border-color: var(--bs-primary);
+  color: var(--bs-dark);
+}
+
+.dark-mode .nav-logout-btn:hover {
+  background: var(--bs-primary-dark, #0a58ca);
+  border-color: var(--bs-primary-dark, #0a58ca);
+}
+
+/* Ícones */
+.nav-user-card i,
+.nav-logout-btn i {
+  font-size: 1.1rem;
+}

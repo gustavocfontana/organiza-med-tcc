@@ -9,23 +9,271 @@
         @if (User.Identity is not null && User.Identity.IsAuthenticated)
         {
             <div class="actions-grid">
-                <a class="action-card primary" href="/Atividades/Listar">
-                    <i class="bi bi-calendar-check"></i>
-                    <span>Gerenciar Atividades</span>
+                <a class="action-card secondary" href="/Medicos/Listar">
+                    <div class="card-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title">Gerenciar Médicos</span>
+                        <p class="card-description">Cadastre e gerencie os médicos da clínica</p>
+                    </div>
                 </a>
 
-                <a class="action-card secondary" href="/Medicos/Listar">
-                    <i class="bi bi-people"></i>
-                    <span>Gerenciar Médicos</span>
+                <a class="action-card primary" href="/Atividades/Listar">
+                    <div class="card-icon">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title">Gerenciar Atividades</span>
+                        <p class="card-description">Organize as atividades e compromissos</p>
+                    </div>
                 </a>
 
                 <a class="action-card success" href="/Medicos/TopMedicos">
-                    <i class="bi bi-trophy"></i>
-                    <span>Ranking</span>
+                    <div class="card-icon">
+                        <i class="bi bi-trophy"></i>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title">Ranking</span>
+                        <p class="card-description">Visualize o desempenho dos médicos</p>
+                    </div>
                 </a>
+            </div>
 
+            <div class="info-banner">
+                <div class="banner-info">
+                    <p id="welcomeMessage"></p>
+                </div>
+                <div class="banner-status">
+                    <div class="status-item">
+                        <i class="bi bi-calendar-date"></i>
+                        <span id="currentDate"></span>
+                    </div>
+                    <div class="status-item">
+                        <i class="bi bi-clock"></i>
+                        <span id="currentTime"></span>
+                    </div>
+                </div>
             </div>
         }
     </div>
-    
 </div>
+
+<style>
+    .home-container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .welcome-section {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .title {
+        font-size: 2.8rem;
+        color: var(--bs-primary);
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .subtitle {
+        font-size: 1.2rem;
+        color: var(--bs-gray-600);
+        margin-bottom: 3rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Cards de Ação Principal */
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .action-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: white;
+        min-height: 250px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .action-card:hover::before {
+            transform: translateY(0);
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+    .card-icon {
+        background: rgba(255, 255, 255, 0.2);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+        .card-icon i {
+            font-size: 2.5rem;
+        }
+
+    .card-content {
+        text-align: center;
+        z-index: 1;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .card-description {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    /* Cores dos Cards */
+    .action-card.secondary {
+        background: linear-gradient(145deg, #6c757d, #495057);
+    }
+
+    .action-card.primary {
+        background: linear-gradient(145deg, #0d6efd, #0a58ca);
+    }
+
+    .action-card.success {
+        background: linear-gradient(145deg, #198754, #146c43);
+    }
+
+    /* Banner Informativo */
+    .info-banner {
+        background: var(--bs-light);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .banner-info {
+        display: flex;
+        flex-direction: column; /* Muda para coluna para alinhar os itens verticalmente */
+        align-items: center; /* Centraliza horizontalmente */
+        text-align: center; /* Centraliza o texto */
+        gap: 1rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding-bottom: 1rem;
+    }
+
+        .banner-info i {
+            font-size: 2rem;
+            color: var(--bs-primary);
+        }
+
+        .banner-info p {
+            margin: 0;
+            color: var(--bs-gray-700);
+            font-size: 1.1rem;
+        }
+
+    .banner-status {
+        display: flex;
+        gap: 2rem;
+        justify-content: flex-end;
+    }
+
+    .status-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--bs-gray-600);
+    }
+
+        .status-item i {
+            font-size: 1.2rem;
+            color: var(--bs-primary);
+        }
+
+    #welcomeMessage {
+        margin: 0;
+        color: var(--bs-gray-700);
+        font-size: 1.1rem;
+        white-space: pre-line;
+        text-align: center; /* Garante que o texto esteja centralizado */
+        width: 100%; /* Ocupa toda a largura disponível */
+    }
+</style>
+
+<script>
+    function updateDateTime() {
+        var now = new Date();
+
+        // Formata a data
+        var dateOptions = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        };
+        document.getElementById('currentDate').textContent = now.toLocaleDateString('pt-BR', dateOptions);
+
+        // Formata a hora
+        var timeOptions = {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        };
+        document.getElementById('currentTime').textContent = now.toLocaleTimeString('pt-BR', timeOptions);
+    }
+
+    // Atualiza data e hora a cada segundo
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
+    var welcomeMessages = [
+        '"Comece o dia arrumando a cama."\n- William H. McRaven',
+        '"Avalie uma pessoa pelo tamanho do coração."\n- William H. McRaven',
+        '"Aceite ser um biscoito de açúcar e siga em frente."\n- William H. McRaven',
+        '"Enfrente os tubarões."\n- William H. McRaven',
+        '"Nunca toque o sino."\n- William H. McRaven'
+    ];
+
+    // Função para selecionar mensagem aleatória
+    function setRandomWelcomeMessage() {
+        var randomIndex = Math.floor(Math.random() * welcomeMessages.length);
+        document.getElementById('welcomeMessage').textContent = welcomeMessages[randomIndex];
+    }
+
+    // Chama a função quando a página carrega
+    document.addEventListener('DOMContentLoaded', setRandomWelcomeMessage);
+</script>
